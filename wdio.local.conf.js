@@ -33,7 +33,7 @@ export const config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  specs: ['./test/specs/**/*.e2e.js'],
+  specs: ['./test/specs/**/*.js'],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -68,6 +68,9 @@ export const config = {
         {
           maxInstances: 1,
           browserName: 'chrome',
+          'wdio:chromedriverOptions': {
+            binary: '/opt/homebrew/bin/chromedriver'
+          },
           'goog:chromeOptions': {
             args: [
               '--no-sandbox',
@@ -89,11 +92,6 @@ export const config = {
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
   logLevel: debug ? 'debug' : 'info',
-
-  logLevels: {
-    webdriver: debug ? 'debug' : 'error'
-  },
-
   //
   // Set specific log levels per logger
   // loggers:
@@ -117,7 +115,12 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://grants-ui.test.cdp-int.defra.cloud/',
+
+  // Connection to local chromedriver
+  hostname: '127.0.0.1',
+  port: 9515,
+  path: '/',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -134,7 +137,12 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  services: [
+    [
+      'chromedriver',
+      { chromedriverCustomPath: '/opt/homebrew/bin/chromedriver' }
+    ]
+  ],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

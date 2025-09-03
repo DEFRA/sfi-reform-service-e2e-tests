@@ -53,10 +53,6 @@ export const config = {
 
   logLevel: 'info',
 
-  logLevels: {
-    webdriver: 'error'
-  },
-
   // Number of failures before the test suite bails.
   bail: 0,
   waitforTimeout: 10000,
