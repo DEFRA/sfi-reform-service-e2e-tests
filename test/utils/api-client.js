@@ -1,4 +1,4 @@
-import { request } from 'undici'
+import { fetch } from 'undici'
 import { logApiStep } from '../utils/allure-helpers.js'
 
 function mergeHeaders(base = {}, extra = {}) {
@@ -70,20 +70,15 @@ class WdioApiClient {
     let text
     let contentType
     try {
-      res = await request(url, {
+      res = await fetch(url, {
         method,
+        redirect: 'follow',
         headers: finalHeaders,
         body: body === undefined ? undefined : body
       })
-      contentType = res.headers['content-type'] || ''
-      text = await res.body.text()
 
-      // Debug: log the response details
-      console.log('API Response:', {
-        status: res.statusCode,
-        headers: res.headers,
-        body: text.substring(0, 200)
-      })
+      contentType = res.headers['content-type'] || ''
+      text = await res.text()
     } catch (err) {
       logApiStep({
         title: `API ${method} ${url} - network error`,
@@ -101,8 +96,8 @@ class WdioApiClient {
     }
 
     const responseInfo = {
-      status: res.statusCode,
-      ok: res.statusCode >= 200 && res.statusCode < 300,
+      status: res.status,
+      ok: res.status >= 200 && res.status < 300,
       headers: res.headers,
       body: text,
       contentType

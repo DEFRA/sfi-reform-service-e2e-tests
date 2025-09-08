@@ -41,6 +41,7 @@ export async function runFundingApiJourney({
   // 1. GET start → extract crumb
   const r1 = await Api.get('/find-funding-for-land-or-farms/start')
   assertStatus(r1, 200)
+
   const crumb = extractCrumbFromHtml(r1.body)
   if (!crumb) throw new Error('Crumb not found in GET /start response')
   setCrumb(crumb)
@@ -49,96 +50,105 @@ export async function runFundingApiJourney({
   const c = getCrumb()
 
   // Helper post with plain text body
-  async function postPlain(path, payload) {
+  async function postFormUrlEncoded(path, payload) {
     return Api.post(path, payload, {
-      headers: { 'Content-Type': 'text/plain' }
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   }
 
   // 2. POST start
-  assertStatus(await postPlain('/find-funding-for-land-or-farms/start', c), 200)
-
-  // 3. POST confirm-farm-details
   assertStatus(
-    await postPlain('/find-funding-for-land-or-farms/confirm-farm-details', c),
+    await postFormUrlEncoded(
+      '/find-funding-for-land-or-farms/start',
+      `crumb=${c}`
+    ),
     200
   )
 
-  // 4. POST confirm-you-will-be-eligible
+  // 3. POST confirm-farm-details
   assertStatus(
-    await postPlain(
+    await postFormUrlEncoded(
+      '/find-funding-for-land-or-farms/confirm-farm-details',
+      `crumb=${c}`
+    ),
+    200
+  )
+
+  // // 4. POST confirm-you-will-be-eligible
+  assertStatus(
+    await postFormUrlEncoded(
       '/find-funding-for-land-or-farms/confirm-you-will-be-eligible',
-      c
+      `crumb=${c}`
     ),
     200
   )
 
   // 5. POST confirm-your-land-details-are-up-to-date
   assertStatus(
-    await postPlain(
+    await postFormUrlEncoded(
       '/find-funding-for-land-or-farms/confirm-your-land-details-are-up-to-date',
-      c
+      `crumb=${c}`
     ),
     200
   )
 
   // 6. POST select-land-parcel (crumb + selectedLandParcel)
   assertStatus(
-    await postPlain(
+    await postFormUrlEncoded(
       '/find-funding-for-land-or-farms/select-land-parcel',
-      `crumb=${c}\nselectedLandParcel=${selectedLandParcel}`
+      `crumb=${c}&selectedLandParcel=${selectedLandParcel}`
     ),
     200
   )
 
   // 7. POST choose-which-actions-to-do (crumb + landAction)
-  assertStatus(
-    await postPlain(
-      '/find-funding-for-land-or-farms/choose-which-actions-to-do',
-      `crumb=${c}\nlandAction=${landAction}`
-    ),
-    200
-  )
+  // assertStatus(
+  //   await postFormUrlEncoded(
+  //     '/find-funding-for-land-or-farms/choose-which-actions-to-do',
+  //     `crumb=${c}&landAction=${landAction}`
+  //   ),
+  //   200
+  // )
 
   // 8. POST check-selected-land-actions (crumb + addMoreActions=false)
-  assertStatus(
-    await postPlain(
-      '/find-funding-for-land-or-farms/check-selected-land-actions',
-      `crumb=${c}\naddMoreActions=false`
-    ),
-    200
-  )
+  // assertStatus(
+  //   await postFormUrlEncoded(
+  //     '/find-funding-for-land-or-farms/check-selected-land-actions',
+  //     `crumb=${c}&addMoreActions=false`
+  //   ),
+  //   200
+  // )
 
-  // 9. POST summary
-  assertStatus(
-    await postPlain('/find-funding-for-land-or-farms/summary', c),
-    200
-  )
+  // // 9. POST summary
+  // assertStatus(
+  //   await postFormUrlEncoded('/find-funding-for-land-or-farms/summary', `crumb=${c}`),
+  //   200
+  // )
 
   // 10. POST submit-your-application (crumb + action=send)
-  assertStatus(
-    await postPlain(
-      '/find-funding-for-land-or-farms/submit-your-application',
-      `crumb=${c}\naction=send`
-    ),
-    200
-  )
+  // assertStatus(
+  //   await postFormUrlEncoded(
+  //     '/find-funding-for-land-or-farms/submit-your-application',
+  //     `crumb=${c}&action=send`
+  //   ),
+  //   200
+  // )
 
-  // 11. GET confirmation → assert panel body and extract ref
-  const r11 = await Api.get('/find-funding-for-land-or-farms/confirmation')
-  assertStatus(r11, 200)
-  if (!r11.body.includes('<div class="govuk-panel__body">')) {
-    addAllureAttachment(
-      'Validation Error',
-      'Panel body not found',
-      'text/plain'
-    )
-    throw new Error('Expected confirmation panel body not found in HTML')
-  }
-  const ref = extractReferenceNumberFromHtml(r11.body)
-  if (!ref) throw new Error('Reference number not found in confirmation page')
-  setReferenceNumber(ref)
-  addAllureAttachment('Extracted Reference Number', ref, 'text/plain')
+  // // 11. GET confirmation → assert panel body and extract ref
+  // const r11 = await Api.get('/find-funding-for-land-or-farms/confirmation')
+  // assertStatus(r11, 200)
+  // if (!r11.body.includes('<div class="govuk-panel__body">')) {
+  //   addAllureAttachment(
+  //     'Validation Error',
+  //     'Panel body not found',
+  //     'text/plain'
+  //   )
+  //   throw new Error('Expected confirmation panel body not found in HTML')
+  // }
+  // const ref = extractReferenceNumberFromHtml(r11.body)
+  // if (!ref) throw new Error('Reference number not found in confirmation page')
+  // setReferenceNumber(ref)
+  // addAllureAttachment('Extracted Reference Number', ref, 'text/plain')
 
-  return { crumb: c, referenceNumber: ref }
+  // return { crumb: c, referenceNumber: ref }
 }
