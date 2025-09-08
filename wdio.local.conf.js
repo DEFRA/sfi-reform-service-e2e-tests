@@ -68,9 +68,6 @@ export const config = {
         {
           maxInstances: 1,
           browserName: 'chrome',
-          'wdio:chromedriverOptions': {
-            binary: '/opt/homebrew/bin/chromedriver'
-          },
           'goog:chromeOptions': {
             args: [
               '--no-sandbox',
@@ -115,12 +112,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: 'https://grants-ui.test.cdp-int.defra.cloud/',
-
-  // Connection to local chromedriver
-  hostname: '127.0.0.1',
-  port: 9515,
-  path: '/',
+  baseUrl: 'https://grants-ui.test.cdp-int.defra.cloud',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -137,12 +129,7 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: [
-    [
-      'chromedriver',
-      { chromedriverCustomPath: '/opt/homebrew/bin/chromedriver' }
-    ]
-  ],
+  // services: [],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

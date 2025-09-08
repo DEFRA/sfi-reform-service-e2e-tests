@@ -1,6 +1,5 @@
 import { request } from 'undici'
 import { logApiStep } from '../utils/allure-helpers.js'
-import { getBaseUrl } from '../utils/shared-context.js'
 
 function mergeHeaders(base = {}, extra = {}) {
   return { ...base, ...extra }
@@ -9,7 +8,8 @@ function mergeHeaders(base = {}, extra = {}) {
 class WdioApiClient {
   constructor(options = {}) {
     // Use the same base URL as the WebdriverIO configuration
-    this.baseUrl = options.baseUrl || 'https://grants-ui.test.cdp-int.defra.cloud'
+    this.baseUrl =
+      options.baseUrl || 'https://grants-ui.test.cdp-int.defra.cloud'
     this.defaultHeaders = options.headers || { 'Content-Type': 'text/plain' }
     this._clientPromise = undefined
     this.browser = options.browser || null
@@ -38,11 +38,13 @@ class WdioApiClient {
       try {
         const cookies = await this.browser.getAllCookies()
         if (cookies && cookies.length > 0) {
-          const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ')
+          const cookieHeader = cookies
+            .map((cookie) => `${cookie.name}=${cookie.value}`)
+            .join('; ')
           finalHeaders = { ...finalHeaders, Cookie: cookieHeader }
 
           // Extract CSRF token from cookies if available
-          const csrfCookie = cookies.find(cookie => cookie.name === 'crumb')
+          const csrfCookie = cookies.find((cookie) => cookie.name === 'crumb')
           if (csrfCookie && method === 'POST') {
             // Try multiple common CSRF header names
             finalHeaders = {
@@ -77,7 +79,11 @@ class WdioApiClient {
       text = await res.body.text()
 
       // Debug: log the response details
-      console.log('API Response:', { status: res.statusCode, headers: res.headers, body: text.substring(0, 200) })
+      console.log('API Response:', {
+        status: res.statusCode,
+        headers: res.headers,
+        body: text.substring(0, 200)
+      })
     } catch (err) {
       logApiStep({
         title: `API ${method} ${url} - network error`,
