@@ -12,11 +12,15 @@ afterEach(async () => {
 describe('SFI Application E2E Tests', () => {
   describe('Given farmer goes through the complete E2E journey', () => {
     it('Then the farmer is able to complete the SFI application', async () => {
+      const username = '1100495932'
+      const password = process.env.DEFRA_ID_USER_PASSWORD
+
       await HomePage.open()
       await expect(browser).toHaveTitle(`Sign in to your acccount`)
-      await LoginPage.login('1100506632', 'Password456')
+      await LoginPage.login(username, password)
       await expect(browser).toHaveTitle(`Start page | ${SERVICE_NAME}`)
-      await runFundingApiJourney({ browser })
+      const appRefNum = await runFundingApiJourney({ browser })
+      console.log(`Application Reference Number: ${appRefNum}`)
     })
   })
 })
