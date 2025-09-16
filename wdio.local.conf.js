@@ -33,7 +33,7 @@ export const config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  specs: ['./test/specs/**/*.e2e.js'],
+  specs: ['./test/specs/**/*.js'],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -89,11 +89,6 @@ export const config = {
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
   logLevel: debug ? 'debug' : 'info',
-
-  logLevels: {
-    webdriver: debug ? 'debug' : 'error'
-  },
-
   //
   // Set specific log levels per logger
   // loggers:

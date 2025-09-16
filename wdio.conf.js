@@ -14,7 +14,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `https://sfi-reform-service-e2e-tests.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+  baseUrl: `https://grants-ui.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
@@ -28,14 +28,13 @@ export const config = {
 
   capabilities: [
     {
-      ...(process.env.HTTP_PROXY && {
-        proxy: {
-          proxyType: 'manual',
-          httpProxy: new URL(process.env.HTTP_PROXY).host,
-          sslProxy: new URL(process.env.HTTP_PROXY).host
-        }
-      }),
       browserName: 'chrome',
+      // Outbound calls must go via the proxy
+      proxy: {
+        proxyType: 'manual',
+        httpProxy: 'localhost:3128',
+        sslProxy: 'localhost:3128'
+      },
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
@@ -60,16 +59,13 @@ export const config = {
 
   logLevel: 'info',
 
-  logLevels: {
-    webdriver: 'error'
-  },
-
   // Number of failures before the test suite bails.
   bail: 0,
   waitforTimeout: 10000,
   waitforInterval: 200,
-  connectionRetryTimeout: 6000,
+  connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
+
   framework: 'mocha',
 
   reporters: [
@@ -190,8 +186,20 @@ export const config = {
     context,
     { error, result, duration, passed, retries }
   ) {
-    if (error) {
+    try {
       await browser.takeScreenshot()
+    } catch (err) {
+      console.log('Screenshot failed:', err.message)
+    }
+
+    if (error) {
+      try {
+        browser.executeScript(
+          'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "At least 1 assertion failed"}}'
+        )
+      } catch (err) {
+        console.log('Execute script failed:', err.message)
+      }
     }
   },
 
