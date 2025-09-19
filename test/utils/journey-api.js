@@ -106,7 +106,7 @@ export async function runFundingApiJourney({
   assertStatus(
     await postFormUrlEncoded(
       '/find-funding-for-land-or-farms/select-actions-for-land-parcel',
-      `crumb=${c}&landAction=${landAction}`
+      `crumb=${c}&landAction_1=${landAction}`
     ),
     200
   )
