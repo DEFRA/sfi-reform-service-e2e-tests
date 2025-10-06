@@ -18,7 +18,9 @@ describe('SFI Application E2E Tests', () => {
       await HomePage.open()
       await expect(browser).toHaveTitle(`Sign in to your acccount`)
       await LoginPage.login(username, password)
-      await expect(browser).toHaveTitle(`Start page | ${SERVICE_NAME}`)
+      await expect(browser).toHaveTitle(
+        `Confirm your details | ${SERVICE_NAME}`
+      )
       const appRefNum = await runFundingApiJourney({ browser })
       console.log(`Application Reference Number: ${appRefNum}`)
     })
