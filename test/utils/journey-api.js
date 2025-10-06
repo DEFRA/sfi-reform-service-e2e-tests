@@ -38,13 +38,14 @@ export async function runFundingApiJourney({
 } = {}) {
   // Create API client with browser context
   const Api = new WdioApiClient({ browser })
+  const serviceName = 'farm-payments'
 
-  // 1. GET start → extract crumb
-  const r1 = await Api.get('/find-funding-for-land-or-farms/start')
+  // 1. GET /farm-payments → extract crumb
+  const r1 = await Api.get(`/${serviceName}`)
   assertStatus(r1, 200)
 
   const crumb = extractCrumbFromHtml(r1.body)
-  if (!crumb) throw new Error('Crumb not found in GET /start response')
+  if (!crumb) throw new Error('Crumb not found in GET /farm-payments response')
   setCrumb(crumb)
   addAllureAttachment('Extracted Crumb', crumb, 'text/plain')
 
@@ -57,28 +58,23 @@ export async function runFundingApiJourney({
     })
   }
 
-  // 2. POST start
-  assertStatus(
-    await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/start',
-      `crumb=${c}`
-    ),
-    200
-  )
+  // 2. GET /clear-application-state to reset the state of the sbi
+  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
+  assertStatus(r2, 200)
 
   // 3. POST confirm-farm-details
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/confirm-farm-details',
+      `/${serviceName}/confirm-farm-details`,
       `crumb=${c}`
     ),
     200
   )
 
-  // // 4. POST confirm-you-will-be-eligible
+  // 4. POST confirm-you-will-be-eligible
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/confirm-you-will-be-eligible',
+      `/${serviceName}/confirm-you-will-be-eligible`,
       `crumb=${c}`
     ),
     200
@@ -87,7 +83,7 @@ export async function runFundingApiJourney({
   // 5. POST confirm-your-land-details-are-up-to-date
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/confirm-your-land-details-are-up-to-date',
+      `/${serviceName}/confirm-your-land-details-are-up-to-date`,
       `crumb=${c}`
     ),
     200
@@ -96,7 +92,7 @@ export async function runFundingApiJourney({
   // 6. POST select-land-parcel (crumb + selectedLandParcel)
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/select-land-parcel',
+      `/${serviceName}/select-land-parcel`,
       `crumb=${c}&selectedLandParcel=${selectedLandParcel}`
     ),
     200
@@ -105,7 +101,7 @@ export async function runFundingApiJourney({
   // 7. POST choose-which-actions-to-do (crumb + landAction)
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/select-actions-for-land-parcel',
+      `/${serviceName}/select-actions-for-land-parcel`,
       `crumb=${c}&landAction_1=${landAction}`
     ),
     200
@@ -114,7 +110,7 @@ export async function runFundingApiJourney({
   // 8. POST check-selected-land-actions (crumb + addMoreActions=false)
   assertStatus(
     await postFormUrlEncoded(
-      '/find-funding-for-land-or-farms/check-selected-land-actions',
+      `/${serviceName}/check-selected-land-actions`,
       `crumb=${c}&addMoreActions=false`
     ),
     200
@@ -123,7 +119,7 @@ export async function runFundingApiJourney({
   // 9. POST submit-your-application (crumb + action=send)
 
   const r11 = await postFormUrlEncoded(
-    '/find-funding-for-land-or-farms/submit-your-application',
+    `/${serviceName}/submit-your-application`,
     `crumb=${c}&action=send`
   )
 
