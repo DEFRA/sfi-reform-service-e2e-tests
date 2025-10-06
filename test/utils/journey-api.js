@@ -38,9 +38,10 @@ export async function runFundingApiJourney({
 } = {}) {
   // Create API client with browser context
   const Api = new WdioApiClient({ browser })
+  const serviceName = 'farm-payments'
 
   // 1. GET /farm-payments → extract crumb
-  const r1 = await Api.get('/farm-payments')
+  const r1 = await Api.get(`/${serviceName}`)
   assertStatus(r1, 200)
 
   const crumb = extractCrumbFromHtml(r1.body)
@@ -57,64 +58,68 @@ export async function runFundingApiJourney({
     })
   }
 
-  // 2. POST confirm-farm-details
+  // 2. GET /clear-application-state to reset the state of the sbi
+  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
+  assertStatus(r2, 200)
+
+  // 3. POST confirm-farm-details
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/confirm-farm-details',
+      `/${serviceName}/confirm-farm-details`,
       `crumb=${c}`
     ),
     200
   )
 
-  // 3. POST confirm-you-will-be-eligible
+  // 4. POST confirm-you-will-be-eligible
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/confirm-you-will-be-eligible',
+      `/${serviceName}/confirm-you-will-be-eligible`,
       `crumb=${c}`
     ),
     200
   )
 
-  // 4. POST confirm-your-land-details-are-up-to-date
+  // 5. POST confirm-your-land-details-are-up-to-date
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/confirm-your-land-details-are-up-to-date',
+      `/${serviceName}/confirm-your-land-details-are-up-to-date`,
       `crumb=${c}`
     ),
     200
   )
 
-  // 5. POST select-land-parcel (crumb + selectedLandParcel)
+  // 6. POST select-land-parcel (crumb + selectedLandParcel)
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/select-land-parcel',
+      `/${serviceName}/select-land-parcel`,
       `crumb=${c}&selectedLandParcel=${selectedLandParcel}`
     ),
     200
   )
 
-  // 6. POST choose-which-actions-to-do (crumb + landAction)
+  // 7. POST choose-which-actions-to-do (crumb + landAction)
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/select-actions-for-land-parcel',
+      `/${serviceName}/select-actions-for-land-parcel`,
       `crumb=${c}&landAction_1=${landAction}`
     ),
     200
   )
 
-  // 7. POST check-selected-land-actions (crumb + addMoreActions=false)
+  // 8. POST check-selected-land-actions (crumb + addMoreActions=false)
   assertStatus(
     await postFormUrlEncoded(
-      '/farm-payments/check-selected-land-actions',
+      `/${serviceName}/check-selected-land-actions`,
       `crumb=${c}&addMoreActions=false`
     ),
     200
   )
 
-  // 8. POST submit-your-application (crumb + action=send)
+  // 9. POST submit-your-application (crumb + action=send)
 
   const r11 = await postFormUrlEncoded(
-    '/farm-payments/submit-your-application',
+    `/${serviceName}/submit-your-application`,
     `crumb=${c}&action=send`
   )
 
