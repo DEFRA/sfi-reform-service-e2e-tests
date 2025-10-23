@@ -1,6 +1,10 @@
 import { WdioApiClient } from '../utils/api-client.js'
 import { addAllureAttachment } from '../utils/allure-helpers.js'
-import { setCrumb, getCrumb, setReferenceNumber } from '../utils/shared-context.js'
+import {
+  setCrumb,
+  getCrumb,
+  setReferenceNumber
+} from '../utils/shared-context.js'
 
 function assertStatus(response, expected = 200) {
   if (response.status !== expected) {
