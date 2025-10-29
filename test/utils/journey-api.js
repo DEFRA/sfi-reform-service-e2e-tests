@@ -44,7 +44,11 @@ export async function runFundingApiJourney({
   const Api = new WdioApiClient({ browser })
   const serviceName = 'farm-payments'
 
-  // 1. GET /farm-payments → extract crumb
+  // 1. GET /clear-application-state to reset the state of the sbi
+  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
+  assertStatus(r2, 200)
+
+  // 2. GET /farm-payments → extract crumb
   const r1 = await Api.get(`/${serviceName}`)
   assertStatus(r1, 200)
 
@@ -61,10 +65,6 @@ export async function runFundingApiJourney({
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   }
-
-  // 2. GET /clear-application-state to reset the state of the sbi
-  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
-  assertStatus(r2, 200)
 
   // 3. POST confirm-farm-details
   assertStatus(
