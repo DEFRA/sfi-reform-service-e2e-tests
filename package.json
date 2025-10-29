@@ -14,7 +14,7 @@
     "components": "test/components"
   },
   "scripts": {
-    "clean": "rm -rf allure-results && rm -rf allure-report",
+    "clean": "rimraf allure-results && rimraf allure-report",
     "test": "npm run clean && wdio run wdio.conf.js",
     "test:local": "npm run clean && wdio run wdio.local.conf.js",
     "test:local:debug": "npm run clean && DEBUG=true wdio run wdio.local.conf.js",
@@ -50,6 +50,8 @@
     "eslint-plugin-wdio": "8.24.12",
     "husky": "9.1.7",
     "prettier": "3.4.2",
-    "wdio-chromedriver-service": "8.1.1"
+    "rimraf": "6.0.1",
+    "wdio-chromedriver-service": "8.1.1",
+    "yaml": "2.8.1"
   }
 }

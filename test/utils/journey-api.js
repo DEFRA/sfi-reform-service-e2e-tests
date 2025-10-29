@@ -1,6 +1,10 @@
-import { WdioApiClient } from './api-client.js'
-import { addAllureAttachment } from './allure-helpers.js'
-import { setCrumb, getCrumb, setReferenceNumber } from './shared-context.js'
+import { WdioApiClient } from '../utils/api-client.js'
+import { addAllureAttachment } from '../utils/allure-helpers.js'
+import {
+  setCrumb,
+  getCrumb,
+  setReferenceNumber
+} from '../utils/shared-context.js'
 
 function assertStatus(response, expected = 200) {
   if (response.status !== expected) {
@@ -40,7 +44,11 @@ export async function runFundingApiJourney({
   const Api = new WdioApiClient({ browser })
   const serviceName = 'farm-payments'
 
-  // 1. GET /farm-payments → extract crumb
+  // 1. GET /clear-application-state to reset the state of the sbi
+  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
+  assertStatus(r2, 200)
+
+  // 2. GET /farm-payments → extract crumb
   const r1 = await Api.get(`/${serviceName}`)
   assertStatus(r1, 200)
 
@@ -57,10 +65,6 @@ export async function runFundingApiJourney({
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
   }
-
-  // 2. GET /clear-application-state to reset the state of the sbi
-  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
-  assertStatus(r2, 200)
 
   // 3. POST confirm-farm-details
   assertStatus(

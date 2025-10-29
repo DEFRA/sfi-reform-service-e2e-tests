@@ -1,4 +1,4 @@
-import { Page } from 'page-objects/page'
+import { Page } from '../page-objects/page'
 
 class LoginPage extends Page {
   async login(crn, password) {
