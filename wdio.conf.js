@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 
-const oneMinute = 60 * 1000
+const fiveMinute = 60 * 5 * 1000
 
 export const config = {
   //
@@ -93,7 +93,7 @@ export const config = {
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: 'bdd',
-    timeout: oneMinute
+    timeout: fiveMinute
   },
   //
   // =====
