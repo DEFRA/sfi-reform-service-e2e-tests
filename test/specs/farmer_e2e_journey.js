@@ -33,6 +33,7 @@ describe('SFI Application E2E Tests', () => {
       const appRefNum = appRef.referenceNumber.toString().toLowerCase()
       await HomePage.open()
       await browser.pause(5000)
+      await browser.takeScreenshot()
       console.log(`Application Reference Number:`, appRefNum)
       // CW Approval Process
       await browser.url(browser.options.cwUrl)
@@ -70,6 +71,7 @@ describe('SFI Application E2E Tests', () => {
       expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
         'Offered'
       )
+      await browser.takeScreenshot()
       await browser.pause(5000)
       console.log(`agreementId :`, agreementIdInitialJourney)
 
@@ -83,7 +85,7 @@ describe('SFI Application E2E Tests', () => {
       const confirmationText =
         await AgreementOfferAcceptedPage.getConfirmationText()
       expect(confirmationText).toBe('Offer accepted')
-
+      await browser.takeScreenshot()
       // Case Working - Verify Agreement Status after Farmer Accepts Offer
       await browser.pause(5000)
       await browser.url(browser.options.cwUrl)
