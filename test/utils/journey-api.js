@@ -44,11 +44,7 @@ export async function runFundingApiJourney({
   const Api = new WdioApiClient({ browser })
   const serviceName = 'farm-payments'
 
-  // 1. GET /clear-application-state to reset the state of the sbi
-  const r2 = await Api.get(`/${serviceName}/clear-application-state`)
-  assertStatus(r2, 200)
-
-  // 2. GET /farm-payments → extract crumb
+  // 1. GET /farm-payments → extract crumb
   const r1 = await Api.get(`/${serviceName}`)
   assertStatus(r1, 200)
 
@@ -66,7 +62,7 @@ export async function runFundingApiJourney({
     })
   }
 
-  // 3. POST confirm-farm-details
+  // 2. POST confirm-farm-details
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/confirm-farm-details`,
@@ -75,7 +71,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 4. POST confirm-you-will-be-eligible
+  // 3. POST confirm-you-will-be-eligible
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/confirm-you-will-be-eligible`,
@@ -84,7 +80,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 5. POST confirm-your-land-details-are-up-to-date
+  // 4. POST confirm-your-land-details-are-up-to-date
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/confirm-your-land-details-are-up-to-date`,
@@ -93,7 +89,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 6. POST select-land-parcel (crumb + selectedLandParcel)
+  // 5. POST select-land-parcel (crumb + selectedLandParcel)
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/select-land-parcel`,
@@ -102,7 +98,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 7. POST choose-which-actions-to-do (crumb + landAction)
+  // 6. POST choose-which-actions-to-do (crumb + landAction)
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/select-actions-for-land-parcel`,
@@ -111,7 +107,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 8. POST check-selected-land-actions (crumb + addMoreActions=false)
+  // 7. POST check-selected-land-actions (crumb + addMoreActions=false)
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/check-selected-land-actions`,
@@ -120,7 +116,7 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 9. POST submit-your-application (crumb + action=send)
+  // 8. POST submit-your-application (crumb + action=send)
 
   const r11 = await postFormUrlEncoded(
     `/${serviceName}/submit-your-application`,

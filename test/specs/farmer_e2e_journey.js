@@ -29,6 +29,7 @@ describe('SFI Application E2E Tests', () => {
       await expect(browser).toHaveTitle(`Sign in to your acccount`)
       await LoginPage.login(username, password)
       await expect(browser).toHaveTitle(new RegExp(`${SERVICE_NAME}`))
+      await HomePage.clearApplicationState()
       const appRef = await runFundingApiJourney({ browser })
       const appRefNum = appRef.referenceNumber.toString().toLowerCase()
       await HomePage.open()
