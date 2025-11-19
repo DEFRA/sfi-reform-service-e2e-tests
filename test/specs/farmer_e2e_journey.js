@@ -22,7 +22,7 @@ afterEach(async () => {
 describe('SFI Application E2E Tests', () => {
   describe('Given farmer goes through the complete E2E journey', () => {
     it('Then the farmer is able to complete the SFI application', async () => {
-      const username = '1100495932'
+      const username = '1103313150'
       const password = process.env.DEFRA_ID_USER_PASSWORD
 
       await HomePage.open()

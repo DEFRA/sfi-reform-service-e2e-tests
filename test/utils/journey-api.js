@@ -36,7 +36,7 @@ function extractReferenceNumberFromHtml(html) {
 
 export async function runFundingApiJourney({
   // selectedLandParcel = 'SD6943-2399',
-  selectedLandParcel = 'SD7946-0155',
+  selectedLandParcel = 'SK0971-7555',
   landAction = 'CMOR1',
   browser = null
 } = {}) {
