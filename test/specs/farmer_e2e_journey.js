@@ -7,7 +7,6 @@ import CWHomePage from '../page-objects/cw.home.page.js'
 import { entraLogin } from '../utils/cw-login-helper.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
 import CwAllCasesPage from '../page-objects/cw.allcases.page.js'
-import CwApplicationPage from '../page-objects/cw.application.page.js'
 import CwTimelinePage from '../page-objects/cw.timeline.page.js'
 import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import AgreementReviewOfferPage from '../page-objects/agreements.review.offer.page.js'
@@ -47,25 +46,33 @@ describe('SFI Application E2E Tests', () => {
       await CWHomePage.clickLinkByText(appRefNum)
       await browser.pause(5000)
 
-      await CwTasksPage.clickLinkByText('Simple Review')
-      await CwTasksPage.setCheckbox('Simple Review')
-      await CwTasksPage.clickButtonByText('Save and continue')
+      await CwTasksPage.clickLinkByText('Start Review')
+      await CwTasksPage.completeTask('Check Customer Details')
+      await CwTasksPage.completeTask('Land parcel rules checks')
+      await CwTasksPage.completeTask('Check if SSSI consent has been requested')
+      await CwTasksPage.completeTask('Check Payment Amount')
+      await CwTasksPage.completeTask('Review Scheme Budget')
+
+      await CwTasksPage.approveCaseWithComments('APPROVE_APPLICATION')
+
+      await browser.pause(5000)
+      await CwAllCasesPage.clickButtonByText('Confirm')
       await browser.pause(5000)
 
-      await CwAllCasesPage.selectRadioByValue('approve')
-      await CwTasksPage.approvalNotes()
-      await CwAllCasesPage.clickButtonByText('Save')
-      await browser.pause(5000)
-
-      const actualApprovalText = await CwApplicationPage.headerH2()
-      await expect(actualApprovalText).toEqual('Stage for contract management')
-      await browser.pause(5000)
+      await browser.refresh()
       await CwTasksPage.waitForElement('Agreements')
-      await browser.pause(5000)
-      await CwTimelinePage.clickLinkByText('Agreements')
-      await browser.pause(5000)
+
+      await CwTasksPage.confirmTask('Check draft funding agreement')
+      await CwTasksPage.confirmTask(
+        'Notify customer that draft agreement is ready'
+      )
+
+      await CwTasksPage.approveAgreement('AGREEMENT_SENT')
+      await CwAllCasesPage.clickButtonByText('Confirm')
+
       const agreementsPageTitle = await CWAgreementsPage.headerH2()
-      expect(agreementsPageTitle).toEqual('Case grant funding agreement')
+      expect(agreementsPageTitle).toEqual('Customer Agreement Review')
+      await browser.pause(5000000)
 
       const agreementIdInitialJourney =
         await CWAgreementsPage.getFirstAgreementReferenceText()
