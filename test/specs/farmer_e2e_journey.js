@@ -77,11 +77,10 @@ describe('SFI Application E2E Tests', () => {
       console.log(`agreementId :`, agreementIdInitialJourney)
 
       // Agreements - Farmer Accepts Offer
-      await browser.url(
-        browser.options.agreementsUrl + agreementIdInitialJourney
-      )
+      await browser.url(browser.options.agreementsUrl)
       await browser.pause(5000)
       await AgreementReviewOfferPage.selectContinue()
+      await AgreementsAcceptYourOfferPage.clickConfirmCheckbox()
       await AgreementsAcceptYourOfferPage.selectAcceptOffer()
       const confirmationText =
         await AgreementOfferAcceptedPage.getConfirmationText()
