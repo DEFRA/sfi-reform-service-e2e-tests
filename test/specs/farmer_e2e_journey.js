@@ -84,7 +84,7 @@ describe('SFI Application E2E Tests', () => {
       await AgreementsAcceptYourOfferPage.selectAcceptOffer()
       const confirmationText =
         await AgreementOfferAcceptedPage.getConfirmationText()
-      expect(confirmationText).toBe('Offer accepted')
+      expect(confirmationText).toBe('Agreement offer accepted')
       await browser.takeScreenshot()
       // Case Working - Verify Agreement Status after Farmer Accepts Offer
       await browser.pause(5000)
