@@ -38,5 +38,20 @@ class AgreementsAcceptYourOfferPage extends Page {
   async getFundingLink() {
     return await this.getLinkByPartialText('funding for land or farms')
   }
+
+  async clickConfirmCheckbox() {
+    const checkbox = await $('#confirm')
+    await checkbox.scrollIntoView()
+    await checkbox.click()
+    await browser.waitUntil(
+      async () => {
+        return (await checkbox.isSelected()) === true
+      },
+      {
+        timeout: 2000,
+        timeoutMsg: 'Checkbox #confirm was not selected'
+      }
+    )
+  }
 }
 export default new AgreementsAcceptYourOfferPage()
