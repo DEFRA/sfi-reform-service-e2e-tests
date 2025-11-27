@@ -7,22 +7,20 @@
 export async function clearState(sbi, grantCode) {
   // If RUN_ENV is not set or not 'local', use the environment backend URL
   // Otherwise use the ephemeral test backend URL
-  const backendUrl =
-    !process.env.RUN_ENV || process.env.RUN_ENV !== 'local'
-      ? process.env.GRANTS_UI_BACKEND_URL
-      : 'https://ephemeral-protected.api.test.cdp-int.defra.cloud/grants-ui-backend'
+  const backendUrl = !process.env.RUN_ENV
+    ? process.env.GRANTS_UI_BACKEND_URL
+    : 'https://ephemeral-protected.api.test.cdp-int.defra.cloud/grants-ui-backend'
 
   // If RUN_ENV is not set or not 'local', use the headers without x-api-key
   // Otherwise use the headers with x-api-key
-  const headers =
-    !process.env.RUN_ENV || process.env.RUN_ENV !== 'local'
-      ? {
-          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
-        }
-      : {
-          'x-api-key': process.env.GRANTS_UI_BACKEND_API_KEY,
-          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
-        }
+  const headers = !process.env.RUN_ENV
+    ? {
+        Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
+      }
+    : {
+        'x-api-key': process.env.GRANTS_UI_BACKEND_API_KEY,
+        Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
+      }
 
   const response = await fetch(
     `${backendUrl}/state?sbi=${sbi}&grantCode=${grantCode}`,
