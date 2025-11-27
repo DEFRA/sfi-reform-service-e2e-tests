@@ -76,7 +76,7 @@ describe('SFI Application E2E Tests', () => {
 
       const agreementsPageTitle = await CWAgreementsPage.headerH2()
       expect(agreementsPageTitle).toEqual('Customer Agreement Review')
-
+      await CwTasksPage.clickLinkByText('Agreements')
       const agreementIdInitialJourney =
         await CWAgreementsPage.getFirstAgreementReferenceText()
       expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
