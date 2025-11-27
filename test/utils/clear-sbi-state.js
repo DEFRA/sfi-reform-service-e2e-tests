@@ -1,5 +1,3 @@
-import { browser } from '~/node_modules/@wdio/globals/build/index'
-
 /**
  * Clear the SBI state for a given SBI and grant code by making a DELETE request to the backend API.
  *
@@ -11,7 +9,7 @@ export async function clearState(sbi, grantCode) {
   // Otherwise use the ephemeral test backend URL
   const backendUrl =
     process.env.RUN_ENV !== 'local'
-      ? browser.options.baseBackendUrl
+      ? 'https://grants-ui-backend.test.cdp-int.defra.cloud'
       : 'https://ephemeral-protected.api.test.cdp-int.defra.cloud/grants-ui-backend'
 
   // If RUN_ENV is not set or not 'local', use the headers without x-api-key
