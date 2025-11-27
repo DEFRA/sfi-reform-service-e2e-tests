@@ -12,6 +12,7 @@ import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import AgreementReviewOfferPage from '../page-objects/agreements.review.offer.page.js'
 import AgreementsAcceptYourOfferPage from '../page-objects/agreements.accept.your.offer.page.js'
 import AgreementOfferAcceptedPage from '../page-objects/agreements.offer.accepted.page.js'
+import { clearState } from '../utils/clear-sbi-state.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -22,13 +23,16 @@ describe('SFI Application E2E Tests', () => {
   describe('Given farmer goes through the complete E2E journey', () => {
     it('Then the farmer is able to complete the SFI application', async () => {
       const username = '1103313150'
+      const sbi = '106514040'
       const password = process.env.DEFRA_ID_USER_PASSWORD
+      // clear sbi state before starting a new application
+      await clearState(sbi, 'farm-payments')
 
+      // Farmer Login and Application Submission through Land Grants Journey
       await HomePage.open()
       await expect(browser).toHaveTitle(`Sign in to your acccount`)
       await LoginPage.login(username, password)
       await expect(browser).toHaveTitle(new RegExp(`${SERVICE_NAME}`))
-      await HomePage.clearApplicationState()
       const appRef = await runFundingApiJourney({ browser })
       const appRefNum = appRef.referenceNumber.toString().toLowerCase()
       await HomePage.open()
