@@ -9,7 +9,7 @@ export async function clearState(sbi, grantCode) {
   // Otherwise use the ephemeral test backend URL
   const backendUrl =
     process.env.RUN_ENV !== 'local'
-      ? `https://grants-ui-backend.test.cdp-int.defra.cloud`
+      ? 'https://grants-ui-backend.test.cdp-int.defra.cloud'
       : 'https://ephemeral-protected.api.test.cdp-int.defra.cloud/grants-ui-backend'
 
   // If RUN_ENV is not set or not 'local', use the headers without x-api-key
