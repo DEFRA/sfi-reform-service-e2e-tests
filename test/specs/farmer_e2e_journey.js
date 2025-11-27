@@ -50,7 +50,7 @@ describe('SFI Application E2E Tests', () => {
       await CWHomePage.clickLinkByText(appRefNum)
       await browser.pause(5000)
 
-      await CwTasksPage.clickLinkByText('Start Review')
+      await CwTasksPage.clickButtonByText('Start Review')
       await CwTasksPage.completeTask('Check Customer Details')
       await CwTasksPage.completeTask('Land parcel rules checks')
       await CwTasksPage.completeTask('Check if SSSI consent has been requested')
