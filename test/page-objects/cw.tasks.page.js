@@ -27,7 +27,7 @@ class CWTasksPage extends BasePage {
   }
 
   async confirmTask(taskName) {
-    await this.handleTask(taskName, 'confirm')
+    await this.handleTask(taskName, 'CONFIRM')
   }
 
   async completeTask(taskName) {
