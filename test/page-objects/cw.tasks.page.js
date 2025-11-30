@@ -2,7 +2,7 @@ import BasePage from '../page-objects/cw.base.page.js'
 
 class CWTasksPage extends BasePage {
   async approvalNotes(actionCode) {
-    const selector = `#${actionCode}-comment`
+    const selector = `#${actionCode.toUpperCase()}-comment`
     const commentBox = await $(selector)
 
     await commentBox.waitForDisplayed()
@@ -22,8 +22,8 @@ class CWTasksPage extends BasePage {
   async handleTask(taskName, radioValue) {
     await this.clickLinkByText(taskName)
     await this.selectRadioByValue(radioValue)
-    await this.acceptedNotes(taskName)
-    await this.clickButtonByText('Save and continue')
+    await this.approvalNotes(radioValue)
+    await this.clickButtonByText('Confirm')
   }
 
   async confirmTask(taskName) {
