@@ -2,11 +2,11 @@ import BasePage from '../page-objects/cw.base.page.js'
 
 class CWAgreementsPage extends BasePage {
   get firstAgreementReference() {
-    return $('table.govuk-table tbody tr td:first-child span')
+    return $$('dl div dd')[1]
   }
 
   get firstAgreementStatus() {
-    return $('table.govuk-table tbody tr td:nth-child(4) .govuk-tag')
+    return $$('dl div dd')[0]
   }
 
   async getFirstAgreementReferenceText() {
@@ -14,7 +14,7 @@ class CWAgreementsPage extends BasePage {
   }
 
   async getFirstAgreementStatusText() {
-    return await this.firstAgreementStatus.getText()
+    return this.firstAgreementStatus.getText()
   }
 }
 
