@@ -9,7 +9,8 @@ class WdioApiClient {
   constructor(options = {}) {
     // Use the same base URL as the WebdriverIO configuration
     this.baseUrl =
-      options.baseUrl || 'https://grants-ui.test.cdp-int.defra.cloud'
+      options.baseUrl ||
+      `https://grants-ui.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`
     this.defaultHeaders = options.headers || { 'Content-Type': 'text/plain' }
     this._clientPromise = undefined
     this.browser = options.browser || null
