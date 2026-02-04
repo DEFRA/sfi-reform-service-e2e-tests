@@ -26,7 +26,7 @@ describe('SFI Application E2E Tests', () => {
       const sbi = '106514040'
       const password = process.env.DEFRA_ID_USER_PASSWORD
       // clear sbi state before starting a new application
-      await clearState(sbi, 'farm-payments')
+      await clearState(username, sbi, 'farm-payments')
 
       // Farmer Login and Application Submission through Land Grants Journey
       await HomePage.open()

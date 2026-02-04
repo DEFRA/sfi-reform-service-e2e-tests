@@ -40,6 +40,7 @@
     "allure-commandline": "2.32.0",
     "esm-module-alias": "2.2.1",
     "global-agent": "3.0.0",
+    "jsonwebtoken": "9.0.3",
     "undici": "7.3.0"
   },
   "devDependencies": {

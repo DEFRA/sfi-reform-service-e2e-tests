@@ -1,10 +1,12 @@
+import { mintLockToken } from './lock-token'
 /**
  * Clear the SBI state for a given SBI and grant code by making a DELETE request to the backend API.
  *
+ * @param {string} crn - The CRN identifier.
  * @param {string} sbi - The SBI identifier.
  * @param {string} grantCode - The grant code associated with the SBI.
  */
-export async function clearState(sbi, grantCode) {
+export async function clearState(crn, sbi, grantCode) {
   // If RUN_ENV is not set or not 'local', use the environment backend URL
   // Otherwise use the ephemeral test backend URL
   const backendUrl =
@@ -18,11 +20,13 @@ export async function clearState(sbi, grantCode) {
   const headers =
     process.env.RUN_ENV !== 'local'
       ? {
-          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
+          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`,
+          'x-application-lock-owner': mintLockToken(crn, sbi, grantCode)
         }
       : {
           'x-api-key': process.env.GRANTS_UI_BACKEND_API_KEY,
-          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`
+          Authorization: `Bearer ${process.env.GRANTS_UI_BACKEND_API_TOKEN}`,
+          'x-application-lock-owner': mintLockToken(crn, sbi, grantCode)
         }
 
   const response = await fetch(
