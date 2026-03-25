@@ -35,11 +35,21 @@ function extractReferenceNumberFromHtml(html) {
 }
 
 export async function runFundingApiJourney({
-  // selectedLandParcel = 'SD6943-2399',
-  selectedLandParcel = 'SK0971-7555',
-  landAction = 'CMOR1',
-  browser = null
+  browser = null,
+  username,
+  sbi,
+  selectedLandParcel,
+  landAction,
+  consentRequired
 } = {}) {
+  if (username != null || sbi != null) {
+    addAllureAttachment(
+      'Journey farmer identifiers',
+      JSON.stringify({ username, sbi }),
+      'application/json'
+    )
+  }
+
   // Create API client with browser context
   const Api = new WdioApiClient({ browser })
   const serviceName = 'farm-payments'
@@ -101,8 +111,8 @@ export async function runFundingApiJourney({
   // 6. POST choose-which-actions-to-do (crumb + landAction)
   assertStatus(
     await postFormUrlEncoded(
-      `/${serviceName}/select-actions-for-land-parcel`,
-      `crumb=${c}&landAction_1=${landAction}`
+      `/${serviceName}/select-actions-for-land-parcel?parcelId=${selectedLandParcel}`,
+      `crumb=${c}&landAction_1=${landAction}&parcelId=${selectedLandParcel}`
     ),
     200
   )
@@ -116,7 +126,18 @@ export async function runFundingApiJourney({
     200
   )
 
-  // 8. POST submit-your-application (crumb + action=send)
+  // 8. POST you-must-have-consent when the journey requires that step (crumb)
+  if (consentRequired) {
+    assertStatus(
+      await postFormUrlEncoded(
+        `/${serviceName}/you-must-have-consent`,
+        `crumb=${c}`
+      ),
+      200
+    )
+  }
+
+  // 9. POST submit-your-application (crumb + action=send)
 
   const r11 = await postFormUrlEncoded(
     `/${serviceName}/submit-your-application`,
