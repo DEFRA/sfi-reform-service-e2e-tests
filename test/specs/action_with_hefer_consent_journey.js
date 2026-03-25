@@ -1,13 +1,17 @@
 import { browser } from '@wdio/globals'
 import { loginAndRunFundingApiJourney } from '../utils/land-grants-journey-helper.js'
 import { clearState } from '../utils/clear-sbi-state.js'
+import { isEnvTrue } from '../utils/env-flags.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
   await browser.deleteCookies()
 })
 
-describe('SFI Application E2E Tests with HEFER consent', () => {
+const heferEnabled = isEnvTrue('ENABLE_LAND_GRANT_HEFER_20260219')
+const heferDescribe = heferEnabled ? describe : describe.skip
+
+heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
   it('The farmer is able to complete the SFI application', async () => {
     const username = '1106298365'
     const sbi = '106480734'
