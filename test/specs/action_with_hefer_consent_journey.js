@@ -33,7 +33,7 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
-    await completeSFIJourney(appRefNum, consentRequired)
+    await completeSFIJourney(appRefNum, false)
 
     // Agreements - Farmer Accepts Offer
   })
