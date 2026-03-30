@@ -2,6 +2,7 @@ import { browser } from '@wdio/globals'
 import { loginAndRunFundingApiJourney } from '../utils/land-grants-journey-helper.js'
 import { clearState } from '../utils/clear-sbi-state.js'
 import { isEnvTrue } from '../utils/env-flags.js'
+import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -16,7 +17,7 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     const username = '1103313150'
     const sbi = '106514040'
     const selectedLandParcel = 'SK0971-7555'
-    const landAction = 'CMOR1'
+    const landAction = 'UPL1'
     const consentRequired = true
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
@@ -33,6 +34,6 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
 
-    // Agreements - Farmer Accepts Offer
+    await completeSFIJourney(appRefNum, consentRequired)
   })
 })

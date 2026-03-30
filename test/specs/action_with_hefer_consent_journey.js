@@ -2,6 +2,7 @@ import { browser } from '@wdio/globals'
 import { loginAndRunFundingApiJourney } from '../utils/land-grants-journey-helper.js'
 import { clearState } from '../utils/clear-sbi-state.js'
 import { isEnvTrue } from '../utils/env-flags.js'
+import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -32,6 +33,7 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
+    await completeSFIJourney(appRefNum, false)
 
     // Agreements - Farmer Accepts Offer
   })
