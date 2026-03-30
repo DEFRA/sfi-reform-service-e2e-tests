@@ -1,15 +1,14 @@
 import { browser } from '@wdio/globals'
 import { loginAndRunFundingApiJourney } from '../utils/land-grants-journey-helper.js'
 import CWHomePage from '../page-objects/cw.home.page.js'
-import { entraLogin } from '../utils/cw-login-helper.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
-import CwAllCasesPage from '../page-objects/cw.allcases.page.js'
 import CwTimelinePage from '../page-objects/cw.timeline.page.js'
 import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import AgreementReviewOfferPage from '../page-objects/agreements.review.offer.page.js'
 import AgreementsAcceptYourOfferPage from '../page-objects/agreements.accept.your.offer.page.js'
 import AgreementOfferAcceptedPage from '../page-objects/agreements.offer.accepted.page.js'
 import { clearState } from '../utils/clear-sbi-state.js'
+import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -36,39 +35,9 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
       consentRequired
     })
     // CW Approval Process
-    await browser.url(browser.options.cwUrl)
-    const cwUsername = process.env.ENTRA_ID_ADMIN_USER
-    const cwPassword = process.env.ENTRA_ID_USER_PASSWORD
-    await entraLogin(cwUsername, cwPassword)
-    const isReferenceInTable = await CWHomePage.waitUntilVisible(appRefNum)
-    await expect(isReferenceInTable).toBe(true)
-    await browser.pause(2000)
-    await CWHomePage.clickLinkByText(appRefNum)
-    await browser.pause(5000)
+    await completeSFIJourney(appRefNum, consentRequired)
 
-    await CwTasksPage.clickButtonByText('Start')
-    await CwTasksPage.completeTask('Check customer details')
-    await CwTasksPage.completeTask('Review land parcel rule checks')
-    await CwTasksPage.completeTask(
-      'Check if any land parcels are within an SSSI'
-    )
-    await CwTasksPage.completeTask('Check payment amount')
-    await CwTasksPage.completeTask('Review scheme budget as a finance officer')
-
-    await CwTasksPage.approveCaseWithComments('APPROVE_APPLICATION')
-
-    await browser.pause(5000)
-    await CwAllCasesPage.clickButtonByText('Confirm')
-    await browser.pause(5000)
-
-    await browser.refresh()
-    await CwTasksPage.waitForElement('Agreements')
-
-    await CwTasksPage.confirmTask('Check draft funding agreement')
-    await CwTasksPage.confirmTask('Notify customer that agreement is ready')
-
-    await CwTasksPage.approveAgreement('AGREEMENT_SENT')
-    await CwAllCasesPage.clickButtonByText('Confirm')
+    // AGREEMENTS
 
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
