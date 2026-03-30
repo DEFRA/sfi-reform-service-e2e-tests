@@ -17,7 +17,7 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     const username = '1103313150'
     const sbi = '106514040'
     const selectedLandParcel = 'SK0971-7555'
-    const landAction = 'CMOR1'
+    const landAction = 'UPL1'
     const consentRequired = true
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
