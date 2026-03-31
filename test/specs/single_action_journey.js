@@ -4,11 +4,9 @@ import CWHomePage from '../page-objects/cw.home.page.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
 import CwTimelinePage from '../page-objects/cw.timeline.page.js'
 import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
-import AgreementReviewOfferPage from '../page-objects/agreements.review.offer.page.js'
-import AgreementsAcceptYourOfferPage from '../page-objects/agreements.accept.your.offer.page.js'
-import AgreementOfferAcceptedPage from '../page-objects/agreements.offer.accepted.page.js'
 import { clearState } from '../utils/clear-sbi-state.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
+import { completeAgreementJourney } from '~/test/utils/agreement-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -35,15 +33,11 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
       consentRequired
     })
     // CW Approval Process
+    console.log('App Ref Num: ' + appRefNum)
     await completeSFIJourney(appRefNum, consentRequired)
-
-    // AGREEMENTS
-
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
-
     await CwTasksPage.clickLinkByText('Agreements')
-
     const agreementIdInitialJourney =
       await CWAgreementsPage.getFirstAgreementReferenceText()
     expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe('Offered')
@@ -52,15 +46,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     console.log(`agreementId :`, agreementIdInitialJourney)
 
     // Agreements - Farmer Accepts Offer
-    await browser.url(browser.options.agreementsUrl)
-    await browser.pause(5000)
-    await AgreementReviewOfferPage.selectContinue()
-    await AgreementsAcceptYourOfferPage.clickConfirmCheckbox()
-    await AgreementsAcceptYourOfferPage.selectAcceptOffer()
-    const confirmationText =
-      await AgreementOfferAcceptedPage.getConfirmationText()
-    expect(confirmationText).toBe('Agreement offer accepted')
-    await browser.takeScreenshot()
+    await completeAgreementJourney()
     // Case Working - Verify Agreement Status after Farmer Accepts Offer
     await browser.pause(5000)
     await browser.url(browser.options.cwUrl)
