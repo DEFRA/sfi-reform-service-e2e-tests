@@ -39,6 +39,10 @@ class AgreementsOfferAcceptedPage extends Page {
   async getCallChargesLink() {
     return await this.getLinkByPartialText('Find out about call charges')
   }
+
+  async getSectionHeading(headingText) {
+    return await $(`h2=${headingText}`)
+  }
 }
 
 export default new AgreementsOfferAcceptedPage()
