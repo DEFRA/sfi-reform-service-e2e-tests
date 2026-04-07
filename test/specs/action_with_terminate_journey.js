@@ -1,0 +1,84 @@
+import { browser } from '@wdio/globals'
+import { loginAndRunFundingApiJourney } from '../utils/land-grants-journey-helper.js'
+import CWHomePage from '../page-objects/cw.home.page.js'
+import CwTasksPage from '../page-objects/cw.tasks.page.js'
+import CwTimelinePage from '../page-objects/cw.timeline.page.js'
+import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
+import { clearState } from '../utils/clear-sbi-state.js'
+import {
+  completeSFIJourney,
+  initiateTerminateSFIJourney
+} from '../utils/cw-journey-helper.js'
+import { completeAgreementJourney } from '~/test/utils/agreement-journey-helper.js'
+
+afterEach(async () => {
+  // Clear all cookies after each test
+  await browser.deleteCookies()
+})
+
+describe('SFI Application E2E Tests for a terminate journey', () => {
+  it('Caseworker able to terminate a case after customer accepted the agreement', async () => {
+    const username = '1103623923'
+    const sbi = '107365747'
+    const selectedLandParcel = 'SD7858-1059'
+    const landAction = 'CMOR1'
+    const consentRequired = false
+    const password = process.env.DEFRA_ID_USER_PASSWORD
+    // clear sbi state before starting a new application
+    await clearState(username, sbi, 'farm-payments')
+
+    const { appRefNum } = await loginAndRunFundingApiJourney({
+      username,
+      password,
+      sbi,
+      selectedLandParcel,
+      landAction,
+      consentRequired
+    })
+    // CW Approval Process
+    console.log('App Ref Num: ' + appRefNum)
+    // Casework journey
+    await completeSFIJourney(appRefNum, consentRequired)
+
+    const agreementsPageTitle = await CWAgreementsPage.headerH2()
+    expect(agreementsPageTitle).toEqual('Customer Agreement Review')
+    await CwTasksPage.clickLinkByText('Agreements')
+    const agreementIdInitialJourney =
+      await CWAgreementsPage.getFirstAgreementReferenceText()
+    expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe('Offered')
+    await browser.takeScreenshot()
+    await browser.pause(5000)
+    console.log(`agreementId :`, agreementIdInitialJourney)
+
+    // Agreements - Farmer Accepts Offer
+    await completeAgreementJourney()
+    // Case Working - Verify Agreement Status after Farmer Accepts Offer
+    await browser.pause(5000)
+    await browser.url(browser.options.cwUrl)
+    await CWHomePage.clickLinkByText(appRefNum)
+    await browser.pause(5000)
+    await CwTimelinePage.clickLinkByText('Agreements')
+    await browser.pause(5000)
+    const agreementIdOnReturn =
+      await CWAgreementsPage.getFirstAgreementReferenceText()
+    expect(agreementIdInitialJourney).toBe(agreementIdOnReturn)
+    expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
+      'Accepted'
+    )
+    await browser.pause(5000)
+    // Termination process
+
+    await CwTimelinePage.clickLinkByText('Tasks')
+
+    await initiateTerminateSFIJourney()
+
+    await CwTimelinePage.clickLinkByText('Agreements')
+
+    await CWAgreementsPage.waitForAgreementToBeTerminated({
+      status: 'Terminated'
+    })
+    expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
+      'Terminated'
+    )
+  })
+})

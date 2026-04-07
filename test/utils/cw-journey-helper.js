@@ -43,3 +43,27 @@ export async function completeSFIJourney(appRefNum, consentRequired) {
   await CwTasksPage.approveAgreement('AGREEMENT_SENT')
   await CwAllCasesPage.clickButtonByText('Confirm')
 }
+
+export async function initiateTerminateSFIJourney() {
+  await CwTasksPage.enterText(
+    'INITIATE_TERMINATION-comment',
+    'Initiate SFI Journey'
+  )
+  await CwTasksPage.clickButtonByText('Terminate')
+
+  // await CwTasksPage.waitForElement('Termination preparation tasks')
+
+  await CwTasksPage.confirmTask('Check for payment recovery')
+  await CwTasksPage.confirmTask('Notify customer of agreement termination')
+
+  await browser.pause(1000)
+  await CwTasksPage.approveCaseWithComments('TERMINATE_AGREEMENT')
+
+  await CwTasksPage.selectRadioByValue('TERMINATE_AGREEMENT')
+  await CwTasksPage.clickButtonByText('Confirm')
+
+  await CwTasksPage.selectRadioByValue('yes')
+  await browser.pause(1000)
+
+  await CwTasksPage.clickButtonByText('Confirm')
+}
