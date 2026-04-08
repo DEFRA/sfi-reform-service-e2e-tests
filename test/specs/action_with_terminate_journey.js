@@ -9,7 +9,10 @@ import {
   completeSFIJourney,
   initiateTerminateSFIJourney
 } from '../utils/cw-journey-helper.js'
-import { completeAgreementJourney } from '~/test/utils/agreement-journey-helper.js'
+import {
+  completeAgreementJourney,
+  terminatedAgreementJourney
+} from '../utils/agreement-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -80,5 +83,6 @@ describe('SFI Application E2E Tests for a terminate journey', () => {
     expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
       'Terminated'
     )
+    await terminatedAgreementJourney()
   })
 })

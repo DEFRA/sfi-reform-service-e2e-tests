@@ -6,7 +6,7 @@ import CwTimelinePage from '../page-objects/cw.timeline.page.js'
 import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import { clearState } from '../utils/clear-sbi-state.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
-import { completeAgreementJourney } from '~/test/utils/agreement-journey-helper.js'
+import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
