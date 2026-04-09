@@ -21,9 +21,9 @@ afterEach(async () => {
 
 describe('SFI Application E2E Tests for a terminate journey', () => {
   it('Caseworker able to terminate a case after customer accepted the agreement', async () => {
-    const username = '1103404466'
-    const sbi = '106443099'
-    const selectedLandParcel = 'NT9728-0556'
+    const username = '1103171356'
+    const sbi = '107214733'
+    const selectedLandParcel = 'SD8545-9935'
     const landAction = 'CMOR1'
     const consentRequired = false
     const password = process.env.DEFRA_ID_USER_PASSWORD
