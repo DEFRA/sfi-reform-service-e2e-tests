@@ -5,19 +5,25 @@ import CwTasksPage from '../page-objects/cw.tasks.page.js'
 import CwTimelinePage from '../page-objects/cw.timeline.page.js'
 import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import { clearState } from '../utils/clear-sbi-state.js'
-import { completeSFIJourney } from '../utils/cw-journey-helper.js'
-import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
+import {
+  completeSFIJourney,
+  initiateTerminateSFIJourney
+} from '../utils/cw-journey-helper.js'
+import {
+  completeAgreementJourney,
+  terminatedAgreementJourney
+} from '../utils/agreement-journey-helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
   await browser.deleteCookies()
 })
 
-describe('SFI Application E2E Tests for a normal land parcel with single action and no consent', () => {
-  it('The farmer is able to complete the SFI application', async () => {
-    const username = '1103623923'
-    const sbi = '107365747'
-    const selectedLandParcel = 'SD7858-1059'
+describe('SFI Application E2E Tests for a terminate journey', () => {
+  it('Caseworker able to terminate a case after customer accepted the agreement', async () => {
+    const username = '1103171356'
+    const sbi = '107214733'
+    const selectedLandParcel = 'SD8545-9935'
     const landAction = 'CMOR1'
     const consentRequired = false
     const password = process.env.DEFRA_ID_USER_PASSWORD
@@ -34,7 +40,9 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
+    // Casework journey
     await completeSFIJourney(appRefNum, consentRequired)
+
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
     await CwTasksPage.clickLinkByText('Agreements')
@@ -61,5 +69,20 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
       'Accepted'
     )
     await browser.pause(5000)
+    // Termination process
+
+    await CwTimelinePage.clickLinkByText('Tasks')
+
+    await initiateTerminateSFIJourney()
+
+    await CwTimelinePage.clickLinkByText('Agreements')
+
+    await CWAgreementsPage.waitForAgreementToBeTerminated({
+      status: 'Terminated'
+    })
+    expect(await CWAgreementsPage.getFirstAgreementStatusText()).toBe(
+      'Terminated'
+    )
+    await terminatedAgreementJourney()
   })
 })

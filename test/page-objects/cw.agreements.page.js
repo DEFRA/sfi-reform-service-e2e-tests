@@ -16,6 +16,41 @@ class CWAgreementsPage extends BasePage {
   async getFirstAgreementStatusText() {
     return this.firstAgreementStatus.getText()
   }
+
+  get agreementStatusTag() {
+    return $('.govuk-summary-list__value .govuk-tag')
+  }
+
+  async waitForAgreementToBeTerminated({
+    timeout = 60000,
+    interval = 3000,
+    status = 'Terminated'
+  } = {}) {
+    let lastStatus = ''
+
+    await browser.waitUntil(
+      async () => {
+        await browser.refresh()
+
+        const statusElement = await this.agreementStatusTag
+
+        await statusElement.waitForDisplayed({ timeout: 10000 })
+
+        const statusText = (await statusElement.getText()).trim()
+
+        lastStatus = statusText
+
+        console.log(`Current agreement status: ${statusText}`)
+
+        return statusText === status
+      },
+      {
+        timeout,
+        interval,
+        timeoutMsg: `Agreement status did not become "Terminated" in time. Last status: ${lastStatus}`
+      }
+    )
+  }
 }
 
 export default new CWAgreementsPage()

@@ -26,8 +26,19 @@ export default class CwBasePage {
   }
 
   async enterText(selector, value) {
-    const input = await $(selector)
+    const resolvedSelector =
+      selector.startsWith('#') ||
+      selector.startsWith('.') ||
+      selector.startsWith('//')
+        ? selector
+        : `#${selector}`
+
+    const input = await $(resolvedSelector)
+
+    await input.waitForDisplayed({ timeout: config.waitforTimeout })
     await input.waitForEnabled({ timeout: config.waitforTimeout })
+
+    await input.clearValue()
     await input.setValue(value)
   }
 
