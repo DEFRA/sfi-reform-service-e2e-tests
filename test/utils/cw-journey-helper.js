@@ -54,7 +54,9 @@ export async function initiateTerminateSFIJourney() {
   // await CwTasksPage.waitForElement('Termination preparation tasks')
 
   await CwTasksPage.confirmTask('Check for payment recovery')
-  await CwTasksPage.confirmTask('Notify customer of agreement termination')
+  await CwTasksPage.confirmTask(
+    'Notify Agreement Holder of agreement termination'
+  )
 
   await browser.pause(1000)
   await CwTasksPage.approveCaseWithComments('TERMINATE_AGREEMENT')
