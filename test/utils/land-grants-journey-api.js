@@ -103,7 +103,7 @@ export async function runFundingApiJourney({
   assertStatus(
     await postFormUrlEncoded(
       `/${serviceName}/select-land-parcel`,
-      `crumb=${c}&selectedLandParcel=${selectedLandParcel}`
+      `crumb=${c}&landParcels=${selectedLandParcel}`
     ),
     200
   )
