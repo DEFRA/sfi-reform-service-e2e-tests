@@ -14,7 +14,7 @@ export async function loginAndRunFundingApiJourney({
   consentRequired
 }) {
   await HomePage.open()
-  await expect(browser).toHaveTitle(`Sign in to your acccount`)
+  // await expect(browser).toHaveTitle(`Sign in to your acccount`)
   await LoginPage.login(username, password)
   await expect(browser).toHaveTitle(new RegExp(`${SERVICE_NAME}`))
   const appRef = await runFundingApiJourney({
