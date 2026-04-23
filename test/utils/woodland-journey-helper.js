@@ -30,9 +30,9 @@ export async function loginAndRunWoodlandManagementJourney({
   await WoodlandHomePage.open()
 
   // ── Check details and start application ───────────────────────────────────
-  const startNowBtn = await $('button.govuk-button--start')
-  await startNowBtn.waitForClickable()
-  await startNowBtn.click()
+  // const startNowBtn = await $('button.govuk-button--start')
+  // await startNowBtn.waitForClickable()
+  // await startNowBtn.click()
 
   // Are these details correct? → Yes
   await (await $('#businessDetailsUpToDate')).click()
@@ -65,24 +65,20 @@ export async function loginAndRunWoodlandManagementJourney({
   await (await $('button[type="submit"]')).click()
 
   // ── About your woodland ────────────────────────────────────────────────────
-  // Total area of land parcels → 100 ha
-  await (await $('a[href="/woodland/total-area-of-land-parcels"]')).click()
-  await (await $('#totalHectaresAppliedFor')).setValue('100')
+  // Select land parcels → tick NT8701-9412
+  await (await $('a[href="/woodland/land-parcels"]')).click()
+  await (await $('#landParcels-3')).click()
   await (await $('button[type="submit"]')).click()
 
-  // Total area of woodland over 10 years old → 50 ha
+  // Woodland over 10 years old → 50 ha
   await (await $('#hectaresTenOrOverYearsOld')).setValue('50')
   await (await $('button[type="submit"]')).click()
 
-  // Total area of newly planted woodland under 10 years old → 50 ha
-  await (await $('#hectaresUnderTenYearsOld')).setValue('50')
-  await (await $('button[type="submit"]')).click()
-
-  // Grid reference for the centre of the woodland
+  // Centre of your woodland → grid reference
   await (await $('#centreGridReference')).setValue('SP 4178 2432')
   await (await $('button[type="submit"]')).click()
 
-  // Which Forestry Commission team? → North West and West Midlands
+  // Forestry commission team → North West and West Midlands
   await (await $('#fcTeamCode-2')).click()
   await (await $('button[type="submit"]')).click()
 

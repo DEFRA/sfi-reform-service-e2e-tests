@@ -2,7 +2,7 @@ import { Page } from '../page-objects/page'
 
 class WoodlandHomePage extends Page {
   open() {
-    return super.open('/woodland/start')
+    return super.open('/woodland/check-details')
   }
 
   clearApplicationState() {
