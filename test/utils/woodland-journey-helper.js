@@ -78,6 +78,10 @@ export async function loginAndRunWoodlandManagementJourney({
   await (await $('#centreGridReference')).setValue('SP 4178 2432')
   await (await $('button[type="submit"]')).click()
 
+  // Name of woodland
+  await (await $('#woodlandName')).setValue('Ashbrook WD')
+  await (await $('button[type="submit"]')).click()
+
   // Forestry commission team → North West and West Midlands
   await (await $('#fcTeamCode-2')).click()
   await (await $('button[type="submit"]')).click()
