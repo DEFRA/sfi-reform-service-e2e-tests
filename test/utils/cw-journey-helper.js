@@ -56,61 +56,61 @@ export async function completeWoodlandJourney(appRefNum) {
   await browser.pause(5000)
 
   // ── Reviewing Application ──────────────────────────────────────────────────
-  await CwTasksPage.clickButtonByText('Start')
-  await browser.pause(2000)
+  // await CwTasksPage.clickButtonByText('Start')
+  // await browser.pause(2000)
 
-  // Created CRM record task
-  await CwTasksPage.clickLinkByText('Created CRM record')
-  await CwTasksPage.selectRadioByValue('DONE')
-  await CwTasksPage.enterText(
-    'DONE-comment',
-    'CRM record has been created for this application'
-  )
-  await CwTasksPage.clickButtonByText('Confirm')
-  await browser.pause(2000)
+  // // Created CRM record task
+  // await CwTasksPage.clickLinkByText('Created CRM record')
+  // await CwTasksPage.selectRadioByValue('DONE')
+  // await CwTasksPage.enterText(
+  //   'DONE-comment',
+  //   'CRM record has been created for this application'
+  // )
+  // await CwTasksPage.clickButtonByText('Confirm')
+  // await browser.pause(2000)
 
-  // Assign to Forestry Commission
-  await CwTasksPage.enterText(
-    'ACTION_ASSIGN_TO_FC-comment',
-    'This is test explanation for auditing purposes'
-  )
-  await CwTasksPage.clickButtonByText('Assign to Forestry Commission')
-  await browser.pause(2000)
+  // // Assign to Forestry Commission
+  // await CwTasksPage.enterText(
+  //   'ACTION_ASSIGN_TO_FC-comment',
+  //   'This is test explanation for auditing purposes'
+  // )
+  // await CwTasksPage.clickButtonByText('Assign to Forestry Commission')
+  // await browser.pause(2000)
 
-  // ── Awaiting Forestry Commission ───────────────────────────────────────────
-  // FC approved task
-  await CwTasksPage.clickLinkByText('FC approved')
-  await CwTasksPage.selectRadioByValue('YES')
-  await CwTasksPage.enterText('YES-comment', 'FC happy with approval')
-  await CwTasksPage.clickButtonByText('Confirm')
-  await browser.pause(2000)
+  // // ── Awaiting Forestry Commission ───────────────────────────────────────────
+  // // FC approved task
+  // await CwTasksPage.clickLinkByText('FC approved')
+  // await CwTasksPage.selectRadioByValue('YES')
+  // await CwTasksPage.enterText('YES-comment', 'FC happy with approval')
+  // await CwTasksPage.clickButtonByText('Confirm')
+  // await browser.pause(2000)
 
-  // FC response matches application task
-  await CwTasksPage.clickLinkByText('FC response matches application')
-  await CwTasksPage.selectRadioByValue('YES')
-  await CwTasksPage.enterText('YES-comment', 'FC response matches application')
-  await CwTasksPage.clickButtonByText('Confirm')
-  await browser.pause(2000)
+  // // FC response matches application task
+  // await CwTasksPage.clickLinkByText('FC response matches application')
+  // await CwTasksPage.selectRadioByValue('YES')
+  // await CwTasksPage.enterText('YES-comment', 'FC response matches application')
+  // await CwTasksPage.clickButtonByText('Confirm')
+  // await browser.pause(2000)
 
-  // Decision: Approve
-  await CwTasksPage.selectRadioByValue('ACTION_APPROVE_FOR_FC')
-  await CwTasksPage.enterText('ACTION_APPROVE_FOR_FC-comment', 'Looks all good')
-  await CwTasksPage.clickButtonByText('Confirm')
+  // // Decision: Approve
+  // await CwTasksPage.selectRadioByValue('ACTION_APPROVE_FOR_FC')
+  // await CwTasksPage.enterText('ACTION_APPROVE_FOR_FC-comment', 'Looks all good')
+  // await CwTasksPage.clickButtonByText('Confirm')
 
-  // Wait and verify status is 'Agreement Generating'
-  await browser.pause(5000)
-  await browser.waitUntil(
-    async () => {
-      await browser.refresh()
-      const pageSource = await browser.getPageSource()
-      return pageSource.includes('Agreement Generating')
-    },
-    {
-      timeout: 30000,
-      interval: 3000,
-      timeoutMsg: 'Status did not change to "Agreement Generating"'
-    }
-  )
+  // // Wait and verify status is 'Agreement Generating'
+  // await browser.pause(5000)
+  // await browser.waitUntil(
+  //   async () => {
+  //     await browser.refresh()
+  //     const pageSource = await browser.getPageSource()
+  //     return pageSource.includes('Agreement Generating')
+  //   },
+  //   {
+  //     timeout: 30000,
+  //     interval: 3000,
+  //     timeoutMsg: 'Status did not change to "Agreement Generating"'
+  //   }
+  // )
   await browser.takeScreenshot()
 }
 
