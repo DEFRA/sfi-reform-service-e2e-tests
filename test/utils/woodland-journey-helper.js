@@ -4,36 +4,24 @@ import WoodlandHomePage from '../page-objects/woodland.home.page.js'
 
 /**
  * Complete the Woodland Management Plan application journey via the UI.
- * Assumes the farmer session is already established (i.e. clearWoodlandState was called first).
- *
- * @param {string} username - The CRN identifier (unused in UI flow but kept for symmetry).
- * @param {string} password - Unused; kept for symmetry with other journey helpers.
- * @returns {{ appRefNum: string }} The woodland application reference number.
  */
 export async function loginAndRunWoodlandManagementJourney({
   username,
   password,
-  applicationData = {}
+  applicationData
 }) {
   await WoodlandHomePage.open()
   await loginAndValidate(username, password)
   await WoodlandHomePage.clearApplicationState()
-  await browser.pause(3000)
   console.log('Woodland application state cleared')
-  await browser.pause(3000)
 
-  const journeyData = {
-    landParcelId: 'NT8701-9412',
-    hectaresTenOrOverYearsOld: '50',
-    centreGridReference: 'SP 4178 2432',
-    woodlandName: 'Ashbrook WD',
-    fcTeamCodeId: 'fcTeamCode-2',
-    ...applicationData
+  if (!applicationData) {
+    throw new Error('applicationData is required for woodland journey')
   }
 
   await WoodlandHomePage.completeCheckDetails()
   await WoodlandHomePage.completeEligibility()
-  await WoodlandHomePage.completeWoodlandDetails(journeyData)
+  await WoodlandHomePage.completeWoodlandDetails(applicationData)
   await WoodlandHomePage.submitApplication()
 
   // ── Confirmation ───────────────────────────────────────────────────────────
@@ -43,10 +31,7 @@ export async function loginAndRunWoodlandManagementJourney({
   )
 
   const appRefNum = await WoodlandHomePage.getApplicationReference()
-
   await browser.takeScreenshot()
-  console.log('Woodland Application Reference Number:', appRefNum)
-
   return { appRefNum }
 }
 

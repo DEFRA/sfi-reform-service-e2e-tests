@@ -4,17 +4,8 @@ import CWHomePage from '../page-objects/cw.home.page.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
 import CwAllCasesPage from '../page-objects/cw.allcases.page.js'
 
-/** Farmer UI login, then HTTP funding journey; returns refs and leaves the app on home. */
 export async function completeSFIJourney(appRefNum, consentRequired) {
-  await browser.url(browser.options.cwUrl)
-  const cwUsername = process.env.ENTRA_ID_ADMIN_USER
-  const cwPassword = process.env.ENTRA_ID_USER_PASSWORD
-  await entraLogin(cwUsername, cwPassword)
-  const isReferenceInTable = await CWHomePage.waitUntilVisible(appRefNum)
-  await expect(isReferenceInTable).toBe(true)
-  await browser.pause(2000)
-  await CWHomePage.clickLinkByText(appRefNum)
-  await browser.pause(5000)
+  await loginToCwAndOpenCase(appRefNum)
 
   await CwTasksPage.clickButtonByText('Start')
   await CwTasksPage.completeTask('Check customer details')
@@ -45,15 +36,7 @@ export async function completeSFIJourney(appRefNum, consentRequired) {
 }
 
 export async function completeWoodlandJourney(appRefNum) {
-  await browser.url(browser.options.cwUrl)
-  const cwUsername = process.env.ENTRA_ID_ADMIN_USER
-  const cwPassword = process.env.ENTRA_ID_USER_PASSWORD
-  await entraLogin(cwUsername, cwPassword)
-  const isReferenceInTable = await CWHomePage.waitUntilVisible(appRefNum)
-  await expect(isReferenceInTable).toBe(true)
-  await browser.pause(2000)
-  await CWHomePage.clickLinkByText(appRefNum)
-  await browser.pause(5000)
+  await loginToCwAndOpenCase(appRefNum)
 
   // ── Reviewing Application ──────────────────────────────────────────────────
   // await CwTasksPage.clickButtonByText('Start')
@@ -138,4 +121,18 @@ export async function initiateTerminateSFIJourney() {
   await browser.pause(1000)
 
   await CwTasksPage.clickButtonByText('Confirm')
+}
+
+async function loginToCwAndOpenCase(appRefNum) {
+  await browser.url(browser.options.cwUrl)
+  const cwUsername = process.env.ENTRA_ID_ADMIN_USER
+  const cwPassword = process.env.ENTRA_ID_USER_PASSWORD
+  await entraLogin(cwUsername, cwPassword)
+
+  const isReferenceInTable = await CWHomePage.waitUntilVisible(appRefNum)
+  await expect(isReferenceInTable).toBe(true)
+
+  await browser.pause(2000)
+  await CWHomePage.clickLinkByText(appRefNum)
+  await browser.pause(5000)
 }
