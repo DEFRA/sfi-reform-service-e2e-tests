@@ -117,7 +117,7 @@ export const config = {
   cwUrl: `https://fg-cw-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cases`,
   agreementsUrl: `https://grants-ui.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/agreement/`,
   baseBackendUrl: `https://grants-ui-backend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
-
+  gpsUrl: `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/grants-payment-service/`,
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
