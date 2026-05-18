@@ -17,6 +17,7 @@ export const config = {
   baseUrl: `https://grants-ui.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
   cwUrl: `https://fg-cw-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cases`,
   agreementsUrl: `https://grants-ui.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/agreement/`,
+  gpsUrl: `https://grants-payment-service.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/`,
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
