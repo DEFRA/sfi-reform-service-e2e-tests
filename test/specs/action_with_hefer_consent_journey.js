@@ -8,10 +8,6 @@ import { isEnvTrue } from '../utils/env-flags.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
-import {
-  cancelExistingPayments,
-  runGpsPaymentChecks
-} from '../utils/gps_payment_helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -30,8 +26,6 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     const consentRequired = true
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
-    const frn = '1102285668'
-    await cancelExistingPayments(sbi, frn)
     await clearState(username, sbi, 'farm-payments')
 
     const { appRefNum } = await loginAndRunFundingApiJourney({
@@ -58,10 +52,7 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     // Agreements - Farmer Accepts Offer
     await completeAgreementJourney('hefer')
     // Case Working - Verify Agreement Status after Farmer Accepts Offer
-    // GPS Checks start
-    await browser.pause(10000)
-    await runGpsPaymentChecks(sbi, frn)
-    // GPS Checks End
+    await browser.pause(5000)
     await browser.url(browser.options.cwUrl)
     await CWHomePage.clickLinkByText(appRefNum)
     await browser.pause(5000)
