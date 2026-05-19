@@ -54,6 +54,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     // Agreements - Farmer Accepts Offer
     await completeAgreementJourney()
     // GPS Checks start
+    await browser.pause(10000)
     await runGpsPaymentChecks(sbi, frn)
     // GPS Checks End
     // Case Working - Verify Agreement Status after Farmer Accepts Offer

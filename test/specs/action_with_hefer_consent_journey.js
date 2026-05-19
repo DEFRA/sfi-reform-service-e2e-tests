@@ -58,8 +58,8 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     // Agreements - Farmer Accepts Offer
     await completeAgreementJourney('hefer')
     // Case Working - Verify Agreement Status after Farmer Accepts Offer
-    await browser.pause(5000)
     // GPS Checks start
+    await browser.pause(10000)
     await runGpsPaymentChecks(sbi, frn)
     // GPS Checks End
     await browser.url(browser.options.cwUrl)
