@@ -58,6 +58,7 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     await completeAgreementJourney('sssi')
     // Case Working - Verify Agreement Status after Farmer Accepts Offer
     // GPS Checks start
+    await browser.pause(10000)
     await runGpsPaymentChecks(sbi, frn)
     // GPS Checks End
     await browser.pause(5000)

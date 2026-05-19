@@ -14,8 +14,25 @@ export const cancelExistingPayments = async (sbi, frn) => {
 
 export const runGpsPaymentChecks = async (sbi, frn) => {
   // GPS Checks start
-  const { body: record } = await getGrantPaymentById(sbi)
-  const recordData = Array.isArray(record.docs) ? record.docs[0] : record
+  let recordData
+  let retries = 10
+  const retryDelay = 15000
+  while (retries > 0) {
+    const { body: record } = await getGrantPaymentById(sbi)
+    recordData = record?.docs?.[0]
+    const hasPendingPayment = recordData?.grants?.[0]?.payments?.some(
+      (payment) => payment.status === 'pending'
+    )
+    if (hasPendingPayment) {
+      console.log(`Pending payment found for SBI ${sbi}`)
+      break
+    }
+    console.log(
+      `No pending payment found for SBI ${sbi}, retrying... (${retries - 1} retries left)`
+    )
+    await new Promise((resolve) => setTimeout(resolve, retryDelay))
+    retries--
+  }
   console.log(`Matched record:\n${JSON.stringify(recordData, null, 2)}`)
 
   // Basic GPS checks
