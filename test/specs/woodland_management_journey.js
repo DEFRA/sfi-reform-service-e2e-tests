@@ -1,6 +1,7 @@
 import { browser } from '@wdio/globals'
 import { completeWoodlandJourney } from '../utils/cw-journey-helper.js'
 import { loginAndRunWoodlandManagementJourney } from '../utils/woodland-journey-helper.js'
+import { clearState } from '~/test/utils/clear-sbi-state.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -23,6 +24,11 @@ describe('Woodland Management Plan E2E Tests', () => {
     }
 
     const { username, password } = testUser
+
+    // Clear application state
+    const sbi = '106480734'
+    await clearState(username, sbi, 'woodland')
+    console.log('Woodland application state cleared')
 
     // Complete the woodland application journey via the UI
     const { appRefNum } = await loginAndRunWoodlandManagementJourney({
