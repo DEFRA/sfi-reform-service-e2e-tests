@@ -12,8 +12,6 @@ export async function loginAndRunWoodlandManagementJourney({
 }) {
   await WoodlandHomePage.open()
   await loginAndValidate(username, password)
-  await WoodlandHomePage.clearApplicationState()
-  console.log('Woodland application state cleared')
 
   if (!applicationData) {
     throw new Error('applicationData is required for woodland journey')
