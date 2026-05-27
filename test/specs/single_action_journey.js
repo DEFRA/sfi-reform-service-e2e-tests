@@ -23,6 +23,10 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     const sbi = '107365747'
     const selectedLandParcel = 'SD7858-1059'
     const landAction = 'CMOR1'
+    const annualPaymentBreakdown =
+      '£287.09 ( 1.4236 ha x £10.60 per ha, £272.00 per SFI agreement per year )'
+    const expectedTotalParcelArea = '1.4236'
+    const expectedAnnualPaymentValue = '£287.09'
     const consentRequired = false
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
@@ -40,7 +44,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
-    await completeSFIJourney(appRefNum, consentRequired)
+    await completeSFIJourney(appRefNum, consentRequired, annualPaymentBreakdown)
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
     await CwTasksPage.clickLinkByText('Agreements')
@@ -71,5 +75,10 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
       'Accepted'
     )
     await browser.pause(5000)
+
+    await CWAgreementsPage.viewAndValidateAgreementInNewTab({
+      expectedTotalParcelArea,
+      expectedAnnualPaymentValue
+    })
   })
 })

@@ -23,6 +23,9 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     const sbi = '106514040'
     const selectedLandParcel = 'SK0971-7555'
     const landAction = 'UPL1'
+    const annualPaymentBreakdown = '£41.03 ( 1.1722 ha x £35.00 per ha )'
+    const expectedTotalParcelArea = '1.1722'
+    const expectedAnnualPaymentValue = '£41.03'
     const consentRequired = true
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
@@ -38,7 +41,7 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
-    await completeSFIJourney(appRefNum, consentRequired)
+    await completeSFIJourney(appRefNum, consentRequired, annualPaymentBreakdown)
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
     await CwTasksPage.clickLinkByText('Agreements')
@@ -65,5 +68,10 @@ sssiDescribe('SFI Application E2E Tests with SSSI consent @sssi', () => {
       'Accepted'
     )
     await browser.pause(5000)
+
+    await CWAgreementsPage.viewAndValidateAgreementInNewTab({
+      expectedTotalParcelArea,
+      expectedAnnualPaymentValue
+    })
   })
 })

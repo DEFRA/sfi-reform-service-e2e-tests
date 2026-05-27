@@ -5,6 +5,39 @@ class CWApplicationPage extends BasePage {
     const h2Element = await $('h2')
     return await h2Element.getText()
   }
+
+  async clickApplicationTab() {
+    const applicationTab = await $(
+      'a.govuk-service-navigation__link=Application'
+    )
+    await applicationTab.waitForDisplayed()
+    await applicationTab.click()
+  }
+
+  async clickTasksTab() {
+    const applicationTab = await $('a.govuk-service-navigation__link=Tasks')
+    await applicationTab.waitForDisplayed()
+    await applicationTab.click()
+  }
+
+  async getAnnualPaymentText() {
+    const paymentValue = await $(
+      '//dt[contains(@class,"govuk-summary-list__key") and (normalize-space(.)="CMOR1 annual payment" or normalize-space(.)="UPL1 annual payment")]/following-sibling::dd[contains(@class,"govuk-summary-list__value")]'
+    )
+    await paymentValue.waitForDisplayed({ timeout: 50000 })
+    return paymentValue.getText()
+  }
+
+  async verifyAnnualPayment(expectedPayment) {
+    const actualPayment = await this.getAnnualPaymentText()
+    expect(this.normalizeWhitespace(actualPayment)).toBe(
+      this.normalizeWhitespace(expectedPayment)
+    )
+  }
+
+  normalizeWhitespace(text) {
+    return text.replace(/\s+/g, ' ').trim()
+  }
 }
 
 export default new CWApplicationPage()

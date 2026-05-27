@@ -3,9 +3,18 @@ import { entraLogin } from '../utils/cw-login-helper.js'
 import CWHomePage from '../page-objects/cw.home.page.js'
 import CwTasksPage from '../page-objects/cw.tasks.page.js'
 import CwAllCasesPage from '../page-objects/cw.allcases.page.js'
+import CWApplicationPage from 'page-objects/cw.application.page.js'
 
-export async function completeSFIJourney(appRefNum, consentRequired) {
+export async function completeSFIJourney(
+  appRefNum,
+  consentRequired,
+  annualPaymentBreakdown
+) {
   await loginToCwAndOpenCase(appRefNum)
+
+  await CWApplicationPage.clickApplicationTab()
+  await CWApplicationPage.verifyAnnualPayment(annualPaymentBreakdown)
+  await CWApplicationPage.clickTasksTab()
 
   await CwTasksPage.clickButtonByText('Start')
   await CwTasksPage.completeTask('Check customer details')
