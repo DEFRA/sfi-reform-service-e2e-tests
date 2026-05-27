@@ -23,6 +23,10 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     const sbi = '106480734'
     const selectedLandParcel = 'NT8109-6898'
     const landAction = 'CMOR1'
+    const annualPaymentBreakdown =
+      '£272.84 ( 0.0795 ha x £10.60 per ha, £272.00 per SFI agreement per year )'
+    const expectedTotalParcelArea = '0.0795'
+    const expectedAnnualPaymentValue = '£272.84'
     const consentRequired = true
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
@@ -38,7 +42,7 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
     })
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
-    await completeSFIJourney(appRefNum, false)
+    await completeSFIJourney(appRefNum, false, annualPaymentBreakdown)
     const agreementsPageTitle = await CWAgreementsPage.headerH2()
     expect(agreementsPageTitle).toEqual('Customer Agreement Review')
     await CwTasksPage.clickLinkByText('Agreements')
@@ -65,5 +69,10 @@ heferDescribe('SFI Application E2E Tests with HEFER consent @hefer', () => {
       'Accepted'
     )
     await browser.pause(5000)
+
+    await CWAgreementsPage.viewAndValidateAgreementInNewTab({
+      expectedTotalParcelArea,
+      expectedAnnualPaymentValue
+    })
   })
 })
