@@ -62,7 +62,9 @@ class AgreementsReviewOfferPage extends Page {
   }
 
   async selectContinue(selector) {
-    await $('.govuk-button').click()
+    const button = await $('.govuk-button')
+    await button.waitForClickable({ timeout: 10000 })
+    await button.click()
   }
 }
 

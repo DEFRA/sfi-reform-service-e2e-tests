@@ -40,6 +40,27 @@ export async function completeAgreementJourney(consent) {
   await browser.takeScreenshot()
 }
 
+export async function completeWoodlandAgreementJourney(
+  agreementId,
+  username,
+  password
+) {
+  // Farmer session is still active from the woodland journey — navigate directly to the agreement
+  await browser.url(browser.options.agreementsUrl + agreementId)
+  await browser.pause(3000)
+
+  await AgreementReviewOfferPage.selectContinue()
+  await browser.pause(2000)
+  await AgreementsAcceptYourOfferPage.clickConfirmCheckbox()
+  await AgreementsAcceptYourOfferPage.selectAcceptOffer()
+  await browser.pause(2000)
+
+  const confirmationText =
+    await AgreementOfferAcceptedPage.getConfirmationText()
+  expect(confirmationText).toBe('Agreement offer accepted')
+  await browser.takeScreenshot()
+}
+
 export async function terminatedAgreementJourney(consent) {
   await browser.url(browser.options.agreementsUrl)
   await browser.pause(5000)

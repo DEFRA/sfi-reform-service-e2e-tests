@@ -1,6 +1,10 @@
 import { browser } from '@wdio/globals'
-import { completeWoodlandJourney } from '../utils/cw-journey-helper.js'
+import {
+  completeWoodlandJourney,
+  completeWoodlandFCJourney
+} from '../utils/cw-journey-helper.js'
 import { loginAndRunWoodlandManagementJourney } from '../utils/woodland-journey-helper.js'
+import { completeWoodlandAgreementJourney } from '../utils/agreement-journey-helper.js'
 import { clearState } from '~/test/utils/clear-sbi-state.js'
 
 afterEach(async () => {
@@ -39,8 +43,13 @@ describe('Woodland Management Plan E2E Tests', () => {
 
     // CW Approval Process
     console.log('App Ref Num: ' + appRefNum)
-    await completeWoodlandJourney(appRefNum)
+    const { agreementId } = await completeWoodlandJourney(appRefNum)
 
-    // TODO: completeAgreementJourney() - agreement journey not yet implemented for woodland management
+    // Farmer accepts the agreement offer
+    console.log('Agreement ID: ' + agreementId)
+    await completeWoodlandAgreementJourney(agreementId, username, password)
+
+    // CW: Create CRM record, forward to FC, FC review and approval
+    await completeWoodlandFCJourney(appRefNum)
   })
 })
