@@ -12,29 +12,29 @@ class WoodlandHomePage extends Page {
 
   async completeCheckDetails() {
     await this.selectRadioById('businessDetailsUpToDate')
-    await this.submit()
+    await this.clickButton('Continue')
   }
 
   async completeEligibility() {
     await this.clickHref('/woodland/eligibility-land-registered')
     await this.waitForUrlIncludes('/woodland/eligibility-land-registered')
     await this.selectRadioById('landRegisteredWithRpa')
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById('landManagementControl')
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById('publicBodyTenant-2')
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById('landHasGrazingRights-2')
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById('appLandHasExistingWmp-2')
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById('intendToApplyHigherTier')
-    await this.submit()
+    await this.clickButton('Save and continue')
   }
 
   async completeWoodlandDetails({
@@ -47,30 +47,30 @@ class WoodlandHomePage extends Page {
     await this.clickHref('/woodland/land-parcels')
     await this.waitForUrlIncludes('/woodland/land-parcels')
     await this.selectCheckboxByValue(landParcelId)
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.typeById(
       'hectaresTenOrOverYearsOld',
       String(hectaresTenOrOverYearsOld)
     )
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.typeById('centreGridReference', centreGridReference)
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.typeById('woodlandName', woodlandName)
-    await this.submit()
+    await this.clickButton('Save and continue')
 
     await this.selectRadioById(fcTeamCodeId)
-    await this.submit()
+    await this.clickButton('Save and continue')
   }
 
   async submitApplication() {
     await this.clickHref('/woodland/summary')
     await this.waitForUrlIncludes('/woodland/summary')
-    await this.submit()
-    await this.submit()
-    await this.submit()
+    await this.clickButton('Continue')
+    await this.clickButton('Continue')
+    await this.clickButton('Confirm and submit')
   }
 
   async getApplicationReference() {
@@ -83,6 +83,15 @@ class WoodlandHomePage extends Page {
     const submitButton = await $('button[type="submit"]')
     await submitButton.waitForClickable()
     await submitButton.click()
+  }
+
+  async clickButton(buttonText) {
+    const button = await $(`button=${buttonText}`)
+    await button.waitForClickable({
+      timeout: 50000,
+      timeoutMsg: `Button "${buttonText}" was not clickable`
+    })
+    await button.click()
   }
 
   async selectRadioById(id) {
