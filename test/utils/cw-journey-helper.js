@@ -54,7 +54,7 @@ export async function completeWoodlandJourney(appRefNum) {
     'ACTION_APPROVE_APPLICATION-comment',
     'Approving WMP application'
   )
-  await CwTasksPage.clickButtonByText('Approve')
+  await CwTasksPage.clickButtonByText('Continue')
 
   // Wait for 'Notify customer that draft agreement is ready' task to appear
   await CwTasksPage.waitForElement(
@@ -113,7 +113,7 @@ export async function completeWoodlandFCJourney(appRefNum) {
     '#ACTION_FORWARD_TO_FC-comment',
     'Forward to Forestry Commission'
   )
-  await CwTasksPage.clickButtonByText('Forward to FC')
+  await CwTasksPage.clickButtonByText('Forestry Commission has been notified')
   await browser.pause(2000)
 
   // FC Review task
@@ -135,7 +135,7 @@ export async function completeWoodlandFCJourney(appRefNum) {
     '#ACTION_APPROVE_FC_REVIEW-comment',
     "Forestry Commission's decision approved"
   )
-  await CwTasksPage.clickButtonByText('Approve FC review')
+  await CwTasksPage.clickButtonByText('Approve Forestry Commission review')
   await browser.pause(2000)
 
   // Verify agreement status is Accepted on the Agreements tab
