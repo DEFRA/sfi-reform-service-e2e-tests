@@ -22,7 +22,7 @@ class CWApplicationPage extends BasePage {
 
   async getAnnualPaymentText() {
     const paymentValue = await $(
-      '//dt[contains(@class,"govuk-summary-list__key") and (normalize-space(.)="CMOR1 annual payment" or normalize-space(.)="UPL1 annual payment")]/following-sibling::dd[contains(@class,"govuk-summary-list__value")]'
+      '//dt[contains(normalize-space(.), "annual payment")]/following-sibling::dd'
     )
     await paymentValue.waitForDisplayed({ timeout: 50000 })
     return paymentValue.getText()
