@@ -8,6 +8,10 @@ import { clearState } from '../utils/clear-sbi-state.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
 
+beforeEach(async () => {
+  await browser.deleteCookies()
+})
+
 afterEach(async () => {
   await browser.deleteCookies()
 })
@@ -48,6 +52,9 @@ describe('SFI Application E2E Tests for land parcels with single action and no c
         const consentRequired = false
         const password = process.env.DEFRA_ID_USER_PASSWORD
 
+        console.log(
+          `Starting ${landAction} journey - clearing state for SBI ${sbi}`
+        )
         await clearState(username, sbi, 'farm-payments')
         await browser.pause(5000)
 

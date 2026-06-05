@@ -13,7 +13,9 @@ export async function clearState(crn, sbi, grantCode) {
     process.env.RUN_ENV !== 'local'
       ? `https://grants-ui-backend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`
       : `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/grants-ui-backend`
-  console.log('backendUrl: ', backendUrl)
+  console.log(
+    `Clearing state for CRN ${crn}, SBI ${sbi}, grantCode ${grantCode} via ${backendUrl}`
+  )
 
   // If RUN_ENV is not set or not 'local', use the headers without x-api-key
   // Otherwise use the headers with x-api-key
@@ -35,6 +37,9 @@ export async function clearState(crn, sbi, grantCode) {
       method: 'DELETE',
       headers
     }
+  )
+  console.log(
+    `Clear state response for SBI ${sbi}: ${response.status} ${response.statusText}`
   )
   await expect(response.status === 200 || response.status === 404).toBe(true)
 }
