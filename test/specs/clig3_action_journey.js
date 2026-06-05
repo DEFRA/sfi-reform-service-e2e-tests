@@ -18,8 +18,7 @@ describe('SFI Application E2E Tests for a normal land parcel for CLIG3 action an
     const sbi = '107365747'
     const selectedLandParcel = 'SD7758-7429'
     const landAction = 'CLIG3'
-    const annualPaymentBreakdown =
-      '£544.48 ( 3.6058 ha x £151.00 per ha )'
+    const annualPaymentBreakdown = '£544.48 ( 3.6058 ha x £151.00 per ha )'
     const expectedTotalParcelArea = '3.6058'
     const expectedAnnualPaymentValue = '£544.48'
     const consentRequired = false
