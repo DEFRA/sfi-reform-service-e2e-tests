@@ -216,7 +216,7 @@ export async function cancelPayment(data) {
 }
 
 /**
- * Delete Grant Payments by SBI ID
+ * Delete Grant Payments - by SBI ID
  * @param {string} sbiId
  */
 export async function deleteGrantPaymentsById(sbiId) {
