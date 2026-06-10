@@ -98,10 +98,9 @@ export const runGpsPaymentChecks = async (sbi) => {
     expect(processedItem.body.invoiceLines.length).toBeGreaterThan(0)
 
     processedItem.body.invoiceLines.forEach((line) => {
-      // schemeCode should have a value
-      // expect(line.schemeCode).toBeDefined()
-      // expect(line.schemeCode).not.toBe('')
-      // expect(line.schemeCode).not.toBeNull()
+      expect(line.schemeCode).toBeDefined()
+      expect(line.schemeCode).not.toBe('')
+      expect(line.schemeCode).not.toBeNull()
 
       expect(line.accountCode).toBe('SOS710')
       expect(line.fundCode).toBe('DRD10')
