@@ -8,7 +8,7 @@ import { clearState } from '../utils/clear-sbi-state.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
 import {
-  cancelExistingPayments,
+  clearExistingPayments,
   runGpsPaymentChecks
 } from '../utils/gps_payment_helper.js'
 
@@ -31,8 +31,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
     await clearState(username, sbi, 'farm-payments')
-    const frn = '1101313269'
-    await cancelExistingPayments(sbi, frn)
+    await clearExistingPayments(sbi)
     await browser.pause(5000)
     const { appRefNum } = await loginAndRunFundingApiJourney({
       username,
@@ -59,7 +58,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     await completeAgreementJourney()
     // GPS Checks start
     await browser.pause(10000)
-    await runGpsPaymentChecks(sbi, frn)
+    await runGpsPaymentChecks(sbi)
     // GPS Checks End
     // Case Working - Verify Agreement Status after Farmer Accepts Offer
     await browser.pause(5000)
