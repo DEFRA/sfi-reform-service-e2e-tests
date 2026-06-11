@@ -15,7 +15,7 @@ export const runGpsPaymentChecks = async (sbi) => {
   console.log('runGpsPaymentChecks: -> ')
   const getGrantPaymentByIdWithRetry = async (
     sbi,
-    { maxRetries = 10, delayMs = 2000, validate } = {}
+    { maxRetries = 20, delayMs = 10000, validate } = {}
   ) => {
     let lastResult
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
