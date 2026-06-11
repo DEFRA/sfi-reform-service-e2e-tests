@@ -214,3 +214,46 @@ export async function cancelPayment(data) {
 
   return { statusCode, body: responseData }
 }
+
+/**
+ * Delete Grant Payments - by SBI ID
+ * @param {string} sbiId
+ */
+export async function deleteGrantPaymentsById(sbiId) {
+  const url = `${getBaseUrl()}${endpoint}/${sbiId}`
+  console.log('\n>>>>> OUTGOING REQUEST : grant-payments:DELETE by SbiId >>>>>')
+  console.log(`URL: ${url}`)
+  const { statusCode, body } = await request(url, {
+    method: 'DELETE',
+    headers: getHeaders()
+  })
+  const responseData = await body.json()
+  console.log('<<<<< INCOMING RESPONSE : grant-payments:DELETE by SbiId <<<<<')
+  console.log(`STATUS: ${statusCode}`)
+  console.log(`BODY:   ${JSON.stringify(responseData, null, 2)}\n`)
+  return { statusCode, body: responseData }
+}
+
+/**
+ * Trigger Process Payments by SBI
+ * @param {string} sbiId
+ */
+export async function processPaymentsBySbi(sbiId) {
+  const url = `${getBaseUrl()}api/test/process-payments-by-sbi/${sbiId}`
+
+  console.log('\n>>>>> OUTGOING REQUEST : process-payments-by-sbi:POST >>>>>')
+  console.log(`URL: ${url}`)
+
+  const { statusCode, body } = await request(url, {
+    method: 'POST',
+    headers: getHeaders()
+  })
+
+  const responseData = await body.json()
+
+  console.log('<<<<< INCOMING RESPONSE : process-payments-by-sbi:POST <<<<<')
+  console.log(`STATUS: ${statusCode}`)
+  console.log(`BODY: ${JSON.stringify(responseData, null, 2)}\n`)
+
+  return { statusCode, body: responseData }
+}
