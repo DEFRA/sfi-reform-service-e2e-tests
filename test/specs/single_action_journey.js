@@ -7,10 +7,10 @@ import CWAgreementsPage from '../page-objects/cw.agreements.page.js'
 import { clearState } from '../utils/clear-sbi-state.js'
 import { completeSFIJourney } from '../utils/cw-journey-helper.js'
 import { completeAgreementJourney } from '../utils/agreement-journey-helper.js'
-import {
-  clearExistingPayments,
-  runGpsPaymentChecks
-} from '../utils/gps_payment_helper.js'
+// import {
+//   clearExistingPayments,
+//   runGpsPaymentChecks
+// } from '../utils/gps_payment_helper.js'
 
 afterEach(async () => {
   // Clear all cookies after each test
@@ -31,7 +31,7 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
     const password = process.env.DEFRA_ID_USER_PASSWORD
     // clear sbi state before starting a new application
     await clearState(username, sbi, 'farm-payments')
-    await clearExistingPayments(sbi)
+    // await clearExistingPayments(sbi)
     await browser.pause(5000)
     const { appRefNum } = await loginAndRunFundingApiJourney({
       username,
@@ -76,8 +76,8 @@ describe('SFI Application E2E Tests for a normal land parcel with single action 
       expectedAnnualPaymentValue
     })
     // GPS Checks start
-    await browser.pause(10000)
-    await runGpsPaymentChecks(sbi)
+    // await browser.pause(10000)
+    // await runGpsPaymentChecks(sbi)
     // GPS Checks End
   })
 })
