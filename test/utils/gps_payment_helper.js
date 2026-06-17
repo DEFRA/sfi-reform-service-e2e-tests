@@ -12,46 +12,97 @@ export const clearExistingPayments = async (sbi) => {
 }
 
 export const runGpsPaymentChecks = async (sbi) => {
-  console.log('runGpsPaymentChecks: -> ')
+  console.log(`runGpsPaymentChecks: START for SBI ${sbi}`)
+
   const getGrantPaymentByIdWithRetry = async (
     sbi,
     { maxRetries = 20, delayMs = 10000, validate } = {}
   ) => {
     let lastResult
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      console.log(
+        `\n========== GET GRANT PAYMENT ATTEMPT ${attempt}/${maxRetries} ==========`
+      )
+
       const result = await getGrantPaymentById(sbi)
       lastResult = result
 
-      const record = Array.isArray(result.body.docs)
-        ? result.body.docs[0]
-        : result.body
+      console.log('Raw API response:\n', JSON.stringify(result?.body, null, 2))
 
-      if (!validate || validate(record)) {
+      const record = Array.isArray(result?.body?.docs)
+        ? result.body.docs[0]
+        : result?.body
+
+      // console.log('Extracted record:\n', JSON.stringify(record, null, 2))
+
+      let isValid = true
+
+      if (validate) {
+        try {
+          isValid = validate(record)
+
+          console.log(`Validation result: ${isValid}`)
+        } catch (error) {
+          console.log(`Validation threw error: ${error.message}`)
+          isValid = false
+        }
+      }
+
+      if (isValid) {
+        console.log(`Validation passed on attempt ${attempt}`)
         return result
       }
 
+      console.log(`Validation failed on attempt ${attempt}`)
+
       if (attempt < maxRetries) {
-        console.log(
-          `Retry ${attempt}/${maxRetries} failed, waiting ${delayMs}ms...`
-        )
+        console.log(`Waiting ${delayMs}ms before retry...`)
+
         await new Promise((resolve) => setTimeout(resolve, delayMs))
       }
     }
 
     throw new Error(
-      `Condition not met after ${maxRetries} retries for SBI ${sbi}. Last result: ${JSON.stringify(
-        lastResult?.body,
-        null,
-        2
-      )}`
+      `Condition not met after ${maxRetries} retries for SBI ${sbi}.
+Last response:
+${JSON.stringify(lastResult?.body, null, 2)}`
     )
   }
 
-  // Get initial record
-  const { body: record } = await getGrantPaymentById(sbi)
-  const recordData = Array.isArray(record.docs) ? record.docs[0] : record
+  //
+  // STEP 1: Retry until the record exists
+  //
+  console.log(
+    `\n========== WAITING FOR INITIAL RECORD FOR SBI ${sbi} ==========`
+  )
 
-  console.log(`Matched record:\n${JSON.stringify(recordData, null, 2)}`)
+  const { body: initialBody } = await getGrantPaymentByIdWithRetry(sbi, {
+    maxRetries: 20,
+    delayMs: 5000,
+    validate: (record) => {
+      console.log(
+        `Initial record validation:
+record exists = ${!!record}
+sbi = ${record?.sbi}
+grants count = ${record?.grants?.length || 0}`
+      )
+
+      return (
+        !!record &&
+        record.sbi === sbi &&
+        Array.isArray(record.grants) &&
+        record.grants.length > 0
+      )
+    }
+  })
+
+  const recordData = Array.isArray(initialBody.docs)
+    ? initialBody.docs[0]
+    : initialBody
+
+  console.log('\n========== INITIAL RECORD FOUND ==========')
+  console.log(JSON.stringify(recordData, null, 2))
 
   expect(recordData).toBeDefined()
   expect(recordData.sbi).toBe(sbi)
@@ -59,25 +110,45 @@ export const runGpsPaymentChecks = async (sbi) => {
 
   const payments = recordData.grants[0].payments
 
+  console.log(`Found ${payments?.length || 0} payments`)
+
   expect(payments).toHaveLength(4)
 
-  payments.forEach((payment) => {
+  payments.forEach((payment, index) => {
+    console.log(
+      `Payment ${index + 1}: correlationId=${payment.correlationId}, status=${payment.status}`
+    )
+
     expect(payment.status).toBe('pending')
   })
 
-  // Process all payments for this SBI
+  //
+  // STEP 2: Process payments
+  //
+  console.log(`\n========== PROCESSING PAYMENTS FOR SBI ${sbi} ==========`)
+
   const { statusCode, body: processResult } = await processPaymentsBySbi(sbi)
+
+  console.log(`Process status code: ${statusCode}`)
+  console.log('Process response:\n', JSON.stringify(processResult, null, 2))
 
   expect(statusCode).toBe(200)
   expect(processResult.result).toHaveLength(4)
 
-  // Verify each processed payment
+  //
+  // STEP 3: Validate processed payments
+  //
   payments.forEach((payment) => {
     const processedItem = processResult.result.find(
       (item) => item.body.correlationId === payment.correlationId
     )
 
+    console.log(`Checking processed payment: ${payment.correlationId}`)
+
     expect(processedItem).toBeDefined()
+
+    console.log('Processed item:\n', JSON.stringify(processedItem, null, 2))
+
     expect(processedItem.body.sbi).toBe(sbi)
     expect(processedItem.body.correlationId).toBe(payment.correlationId)
 
@@ -90,14 +161,21 @@ export const runGpsPaymentChecks = async (sbi) => {
       }
     )
 
+    console.log(`Expected due date: ${expectedDueDate}`)
+    console.log(`Actual due date: ${processedItem.body.dueDate}`)
+
     expect(processedItem.body.dueDate).toBe(expectedDueDate)
 
-    console.log(`Processed payment ${processedItem.body.invoiceNumber}`)
+    console.log(
+      `Processed payment invoice: ${processedItem.body.invoiceNumber}`
+    )
 
     expect(processedItem.body.invoiceLines).toBeDefined()
     expect(processedItem.body.invoiceLines.length).toBeGreaterThan(0)
 
-    processedItem.body.invoiceLines.forEach((line) => {
+    processedItem.body.invoiceLines.forEach((line, index) => {
+      console.log(`Invoice line ${index + 1}:`, JSON.stringify(line, null, 2))
+
       expect(line.schemeCode).toBeDefined()
       expect(line.schemeCode).not.toBe('')
       expect(line.schemeCode).not.toBeNull()
@@ -107,27 +185,48 @@ export const runGpsPaymentChecks = async (sbi) => {
     })
   })
 
-  // Retry until all statuses are updated in DB
+  //
+  // STEP 4: Retry until all statuses become submitted
+  //
+  console.log(`\n========== WAITING FOR SUBMITTED STATUS UPDATE ==========`)
+
   const { body: updatedRecord } = await getGrantPaymentByIdWithRetry(sbi, {
     maxRetries: 10,
     delayMs: 2000,
-    validate: (record) =>
-      record?.grants?.[0]?.payments?.length === 4 &&
-      record.grants[0].payments.every(
-        (payment) => payment.status === 'submitted'
+    validate: (record) => {
+      const payments = record?.grants?.[0]?.payments || []
+
+      console.log(
+        `Status validation:
+payments found = ${payments.length}
+statuses = ${payments.map((p) => p.status).join(', ')}`
       )
+
+      return (
+        payments.length === 4 &&
+        payments.every((payment) => payment.status === 'submitted')
+      )
+    }
   })
 
   const updatedData = Array.isArray(updatedRecord.docs)
     ? updatedRecord.docs[0]
     : updatedRecord
 
+  console.log('\n========== FINAL UPDATED RECORD ==========')
+  console.log(JSON.stringify(updatedData, null, 2))
+
   const updatedPayments = updatedData.grants[0].payments
 
   expect(updatedPayments).toHaveLength(4)
 
   updatedPayments.forEach((payment, index) => {
-    console.log(`Payment ${index + 1} status: ${payment.status}`)
+    console.log(
+      `Final Payment ${index + 1}: correlationId=${payment.correlationId}, status=${payment.status}`
+    )
+
     expect(payment.status).toBe('submitted')
   })
+
+  console.log(`runGpsPaymentChecks: COMPLETED SUCCESSFULLY for SBI ${sbi}`)
 }
