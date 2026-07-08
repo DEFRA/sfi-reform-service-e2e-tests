@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-export function mintLockToken(crn, sbi, grantCode, grantVersion = 1) {
+export function mintLockToken(crn, sbi, grantCode, grantVersion) {
   return jwt.sign(
     {
       sub: crn,
