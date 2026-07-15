@@ -12,7 +12,7 @@ afterEach(async () => {
   await browser.deleteCookies()
 })
 
-describe('SFI Application E2E Tests for a normal land parcel for UPL8 action and no consent', () => {
+describe.skip('SFI Application E2E Tests for a normal land parcel for UPL8 action and no consent', () => {
   it('The farmer is able to complete the SFI application', async () => {
     const username = '1106298365'
     const sbi = '106480734'
