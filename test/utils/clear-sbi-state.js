@@ -6,7 +6,7 @@ import { mintLockToken } from './lock-token'
 // once a grant has moved past that version.
 const GRANT_VERSIONS = {
   'farm-payments': '1.2.0',
-  woodland: '1.3.0'
+  woodland: '1.4.0'
 }
 
 /**
