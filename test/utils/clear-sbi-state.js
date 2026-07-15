@@ -5,7 +5,7 @@ import { mintLockToken } from './lock-token'
 // '1.0.0' when omitted, which silently misses the real state/lock records
 // once a grant has moved past that version.
 const GRANT_VERSIONS = {
-  'farm-payments': '1.2.0',
+  'farm-payments': '1.4.0',
   woodland: '1.4.0'
 }
 
