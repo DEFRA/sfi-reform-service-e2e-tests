@@ -50,11 +50,8 @@ export async function completeWoodlandJourney(appRefNum) {
 
   // ── Reviewing Application ──────────────────────────────────────────────────
   await CwTasksPage.clickButtonByText('Start')
-  await CwTasksPage.enterText(
-    'ACTION_APPROVE_APPLICATION-comment',
-    'Approving WMP application'
-  )
-  await CwTasksPage.clickButtonByText('Continue')
+  await CwTasksPage.selectRadioByValue('ACTION_APPROVE_APPLICATION')
+  await CwTasksPage.clickButtonByText('Confirm')
 
   // Wait for 'Notify customer that draft agreement is ready' task to appear
   await CwTasksPage.waitForElement(
