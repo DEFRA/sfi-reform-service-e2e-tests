@@ -890,7 +890,7 @@ class CwHomePage extends CwBasePage {
     await input.setValue(randomReason)
 
     console.log(
-      `✅ Entered ${fieldId.includes('approve') ? 'approve' : 'reject'} reason: ${randomReason}`
+      `Entered ${fieldId.includes('approve') ? 'approve' : 'reject'} reason: ${randomReason}`
     )
     return {
       type: fieldId.includes('approve') ? 'approve' : 'reject',
